@@ -1,6 +1,6 @@
 module Tori
   module Define
-    def tori(name, id: :id)
+    def tori(name)
       name_hash_get = "#{name}_hash".to_sym
       name_ivar = "@#{name}".to_sym
       name_hash_ivar = "@#{name}_hash".to_sym
@@ -14,7 +14,7 @@ module Tori
       end
 
       define_method(name_hash_get) do
-        Tori.config.hash_method.call "#{self.class.name}/#{__send__(id.to_sym)}"
+        Tori.config.hash_method.call(self)
       end
     end
   end

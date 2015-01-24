@@ -7,6 +7,6 @@ class TestTori < Test::Unit::TestCase
 
   test "config default" do
     assert_instance_of Tori::Backend::FileSystem, Tori.config.backend
-    assert { Digest::MD5.method(:hexdigest) == Tori.config.hash_method }
+    assert_instance_of Proc, Tori.config.hash_method
   end
 end

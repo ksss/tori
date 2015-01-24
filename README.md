@@ -56,31 +56,19 @@ app/views/photos/new.html.slim
 
 # default configure
 
-```
+```ruby
 # Tori using hash function for decide filename.
-# Filename dependent on class name and `id` setting with `tori` method in class.
-Tori.config.hash_method = Digest::MD5.method(:hexdigest)
+#   Filename dependent on class name and `id` setting with `tori` method in class.
+Tori.config.hash_method = ->(model) do
+  Digest::MD5.hexdigest "#{model.class.name}/#{__send__(model.id.to_sym)}"
+end
 
-
+# File Store directory.
+#   All file upload under here.
 Tori.config.backend = Tori::Backend::FileSystem.new(Pathname("tmp/tori"))
 ```
 
 You can change configure any time.
-
-# Options
-
-Change hash resource data.
-
-```
-class Photo < ActiveRecord::Base
-  tori :image, id: :filename
-  def filename
-    "abc"
-  end
-end
-```
-
-This class never upload two file.
 
 # future TODO
 

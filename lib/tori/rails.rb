@@ -11,7 +11,7 @@ module Tori
     # class Photo < ActiveRecord::Base
     #   tori :image, id: :id
     # end
-    def tori(name, id: :id)
+    def tori(name)
       super
 
       name_hash_get = "#{name}_hash".to_sym
