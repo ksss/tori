@@ -61,10 +61,7 @@ app/views/photos/new.html.slim
 # Filename dependent on class name and `id` setting with `tori` method in class.
 Tori.config.hash_method = Digest::MD5.method(:hexdigest)
 
-# Rails
-Tori.config.backend = Tori::Backend::FileSystem.new(Rails.root.join('tmp', 'tori'))
 
-# Other
 Tori.config.backend = Tori::Backend::FileSystem.new(Pathname("tmp/tori"))
 ```
 

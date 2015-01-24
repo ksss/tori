@@ -1,23 +1,6 @@
 require 'tori'
 
 module Tori
-  class Engine < Rails::Engine
-    initializer "tori.setup", before: :load_environment_config do
-      # Default backend config
-      # You can change setting any time.
-      # Recommend to create config/initializer/tori.rb for setting.
-
-      # Configure for file store backend instance.
-      Tori.config.backend = Tori::Backend::FileSystem.new(Rails.root.join('tmp', 'tori'))
-
-      # Filename hashing method
-      #   It's call when decide filename hash.
-      #   `hash_method` must be have `call` method.
-      #   default: `Digest::MD5.method(:hexdigest)``
-      # Tori.config.hash_method = Digest::MD5.method(:hexdigest)
-    end
-  end
-
   module ActiveRecord
     include Define
 
