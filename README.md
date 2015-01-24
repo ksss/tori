@@ -59,7 +59,7 @@ app/views/photos/new.html.slim
 ```ruby
 # Tori using hash function for decide filename.
 #   Filename dependent on class name and `id` setting with `tori` method in class.
-Tori.config.hash_method = ->(model) do
+Tori.config.filename_callback = ->(model) do
   Digest::MD5.hexdigest "#{model.class.name}/#{__send__(model.id.to_sym)}"
 end
 

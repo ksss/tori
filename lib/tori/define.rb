@@ -14,7 +14,7 @@ module Tori
       end
 
       define_method(name_hash_get) do
-        Tori.config.hash_method.call(self)
+        Tori.config.filename_callback.call(self)
       end
     end
   end

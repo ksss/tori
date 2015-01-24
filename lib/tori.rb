@@ -19,8 +19,8 @@ module Tori
 
         # Filename hashing method
         #   It's call when decide filename hash.
-        #   `hash_method` must be have `call` method.
-        config.hash_method = ->(model) do
+        #   `filename_callback` must be have `call` method.
+        config.filename_callback = ->(model) do
           Digest::MD5.hexdigest "#{model.class.name}/#{model.id}"
         end
       end

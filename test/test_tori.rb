@@ -7,6 +7,6 @@ class TestTori < Test::Unit::TestCase
 
   test "config default" do
     assert_instance_of Tori::Backend::FileSystem, Tori.config.backend
-    assert_instance_of Proc, Tori.config.hash_method
+    assert_instance_of Proc, Tori.config.filename_callback
   end
 end

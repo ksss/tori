@@ -1,9 +1,9 @@
 module Tori
   class Config
-    attr_accessor :backend, :hash_method
+    attr_accessor :backend, :filename_callback
     def initialize
       @backend = nil
-      @hash_method = nil
+      @filename_callback = nil
     end
   end
 end
