@@ -56,17 +56,7 @@ app/views/photos/new.html.slim
 
 # default configure
 
-```ruby
-# Tori using hash function for decide filename.
-#   Filename dependent on class name and `id` setting with `tori` method in class.
-Tori.config.filename_callback = ->(model) do
-  Digest::MD5.hexdigest "#{model.class.name}/#{__send__(model.id.to_sym)}"
-end
-
-# File Store directory.
-#   All file upload under here.
-Tori.config.backend = Tori::Backend::FileSystem.new(Pathname("tmp/tori"))
-```
+[https://github.com/ksss/tori/blob/master/lib/tori.rb](https://github.com/ksss/tori/blob/master/lib/tori.rb)
 
 You can change configure any time.
 
