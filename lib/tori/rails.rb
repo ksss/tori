@@ -16,12 +16,12 @@ module Tori
 
       after_save do
         file = __send__ name
-        Tori.config.backend.copy(file.from.path, file.to_s) if file.from && file.copy?
+        file.copy
       end
 
       after_destroy do
         file = __send__ name
-        Tori.config.backend.delete(file.to_s) if file.exist?
+        file.delete
       end
     end
   end

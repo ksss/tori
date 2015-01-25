@@ -24,5 +24,13 @@ module Tori
     def read
       Tori.config.backend.read(to_s)
     end
+
+    def copy
+      Tori.config.backend.copy(from.path, to_s) if copy?
+    end
+
+    def delete
+      Tori.config.backend.delete(to_s) if exist?
+    end
   end
 end
