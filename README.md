@@ -56,6 +56,14 @@ app/views/photos/new.html.slim
   = f.button 'Upload'
 ```
 
+You can read file.
+
+```
+photo.image.read #=> image bin
+photo.image.exist? #=> exist check
+photo.image.to_s #=> filename
+```
+
 # default configure
 
 [https://github.com/ksss/tori/blob/master/lib/tori.rb](https://github.com/ksss/tori/blob/master/lib/tori.rb)
