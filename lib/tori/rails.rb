@@ -14,16 +14,16 @@ module Tori
     def tori(name)
       super
 
-      name_hash_get = "#{name}_hash".to_sym
+      name_filename_get = "#{name}_filename".to_sym
 
       after_save do
         uploader = __send__ name
-        filename = __send__ name_hash_get
+        filename = __send__ name_filename_get
         Tori.config.backend.copy(uploader.path, filename) if uploader && filename
       end
 
       after_destroy do
-        filename = __send__ name_hash_get
+        filename = __send__ name_filename_get
         Tori.config.backend.delete(filename) if filename
       end
     end

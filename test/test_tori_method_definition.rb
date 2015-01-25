@@ -12,6 +12,6 @@ class TestToriDefine < Test::Unit::TestCase
   test "#tori" do
     assert_respond_to Dammy.new, :test_image
     assert_respond_to Dammy.new, :test_image=
-    assert_respond_to Dammy.new, :test_image_hash
+    assert_respond_to Dammy.new, :test_image_filename
   end
 end
