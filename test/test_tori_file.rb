@@ -11,6 +11,7 @@ class TestToriDefine < Test::Unit::TestCase
 
   teardown do
     Tori.config.filename_callback = @orig
+    FileUtils.rm_rf("test/tmp")
   end
 
   class Dammy
