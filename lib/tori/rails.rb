@@ -9,7 +9,7 @@ module Tori
     #
     # @example:
     # class Photo < ActiveRecord::Base
-    #   tori :image, id: :id
+    #   tori :image
     # end
     def tori(name)
       super
