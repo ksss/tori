@@ -1,6 +1,7 @@
 require 'tori/backend/filesystem'
 require 'tori/config'
 require 'tori/define'
+require 'tori/file'
 require 'tori/version'
 require 'pathname'
 require 'digest/sha1'
