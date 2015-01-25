@@ -1,6 +1,7 @@
 module Tori
   module Backend
     class FileSystem
+      attr_accessor :root
       def initialize(root)
         @root = root
         FileUtils.mkdir_p(@root.to_s)
