@@ -1,7 +1,5 @@
 module Tori
   class File
-    attr_accessor :from
-
     def initialize(model, from = nil)
       @model = model
       @from = from
@@ -26,7 +24,7 @@ module Tori
     end
 
     def copy
-      Tori.config.backend.copy(from.path, to_s) if copy?
+      Tori.config.backend.copy(@from.path, to_s) if copy?
     end
 
     def delete
