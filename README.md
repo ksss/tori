@@ -58,13 +58,25 @@ app/views/photos/new.html.slim
 
 You can read file.
 
-```
+```ruby
 photo.image.read #=> image bin
 photo.image.exist? #=> exist check
 photo.image.to_s #=> filename
 ```
 
-# default configure
+# Custom configure example
+
+```ruby
+# create and save files to public/tori dir.
+Tori.config.backend = Tori::Backend::FileSystem(Pathname("public/tori"))
+
+# filename decided by model.class.name,id,created_at and hidden words.
+Tori.config.filename_callback = ->(model){
+  Digest::MD5.hexdigest "#{model.class.name}/#{model.id}/#{model.created_at}+#{ENV['TORI_MAGICKWORD']}"
+}
+```
+
+# Default configure
 
 [https://github.com/ksss/tori/blob/master/lib/tori.rb](https://github.com/ksss/tori/blob/master/lib/tori.rb)
 
