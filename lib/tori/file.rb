@@ -5,30 +5,31 @@ module Tori
       @from = from
     end
 
-    def to_s
+    def name
       Tori.config.filename_callback.call(@model)
     end
+    alias to_s name
 
     def exist?
-      Tori.config.backend.exist?(to_s)
+      Tori.config.backend.exist? name
     end
 
     def copy?
-      !@model.nil? && !@from.nil? && @from.respond_to?(:path) && 0 < to_s.length
+      !@model.nil? && !@from.nil? && @from.respond_to?(:path) && 0 < name.length
     rescue NameError => e
       false
     end
 
     def read
-      Tori.config.backend.read(to_s)
+      Tori.config.backend.read name
     end
 
     def copy
-      Tori.config.backend.copy(@from.path, to_s) if copy?
+      Tori.config.backend.copy @from.path, name if copy?
     end
 
     def delete
-      Tori.config.backend.delete(to_s) if exist?
+      Tori.config.backend.delete name if exist?
     end
   end
 end
