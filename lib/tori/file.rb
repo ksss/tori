@@ -1,6 +1,6 @@
 module Tori
   class File
-    def initialize(model, from = nil)
+    def initialize(model, from: nil)
       @model = model
       @from = from
     end

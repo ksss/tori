@@ -21,26 +21,27 @@ class TestToriDefine < Test::Unit::TestCase
   end
 
   test "#initialize" do
-    assert_instance_of Tori::File, Tori::File.new(nil, nil)
+    assert_instance_of Tori::File, Tori::File.new(nil)
+    assert_instance_of Tori::File, Tori::File.new(nil, from: nil)
   end
 
   test "#to_s" do
-    assert { "test" == Tori::File.new("test", nil).to_s }
+    assert { "test" == Tori::File.new("test").to_s }
   end
 
   test "#exist?" do
-    assert { true == Tori::File.new(__FILE__, nil).exist? }
-    assert { false == Tori::File.new("nothing_file", nil).exist? }
+    assert { true == Tori::File.new(__FILE__).exist? }
+    assert { false == Tori::File.new("nothing_file").exist? }
   end
 
   test "#copy?" do
-    assert { false == Tori::File.new(__FILE__, nil).copy? }
-    assert { true == Tori::File.new(__FILE__, From.new).copy? }
+    assert { false == Tori::File.new(__FILE__).copy? }
+    assert { true == Tori::File.new(__FILE__, from: From.new).copy? }
   end
 
   test "copy" do
     assert { false == File.exist?("test/tmp/copy") }
-    Tori::File.new("copy", From.new).copy
+    Tori::File.new("copy", from: From.new).copy
     assert { true == File.exist?("test/tmp/copy") }
   end
 end
