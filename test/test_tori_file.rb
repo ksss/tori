@@ -25,8 +25,8 @@ class TestToriDefine < Test::Unit::TestCase
     assert_instance_of Tori::File, Tori::File.new(nil, from: nil)
   end
 
-  test "#to_s" do
-    assert { "test" == Tori::File.new("test").to_s }
+  test "#name" do
+    assert { "test" == Tori::File.new("test").name }
   end
 
   test "#exist?" do
