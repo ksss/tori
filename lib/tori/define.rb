@@ -9,7 +9,7 @@ module Tori
       end
 
       define_method("#{name}=") do |uploader|
-        file = File.new(self, uploader)
+        file = File.new(self, from: uploader)
         instance_variable_set name_ivar, file
       end
     end
