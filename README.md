@@ -67,12 +67,13 @@ photo.image.to_s #=> filename
 # Custom configure example
 
 ```ruby
-# create and save files to public/tori dir.
-Tori.config.backend = Tori::Backend::FileSystem(Pathname("public/tori"))
+# Save to S3 bucket.
+require 'tori/backend/s3'
+Tori.config.backend = Tori::Backend::S3.new('tori_bucket')
 
-# filename decided by model.class.name,id,created_at and hidden words.
+# Filename decided by model.class.name,id and hidden words.
 Tori.config.filename_callback do |model|
-  Digest::MD5.hexdigest "#{model.class.name}/#{model.id}/#{model.created_at}+#{ENV['TORI_MAGICKWORD']}"
+  "#{model.class.name}/#{Digest::SHA1.hexdigest "#{ENV["TORI_MAGICKWORD"]}/#{model.id}"}"
 end
 ```
 
