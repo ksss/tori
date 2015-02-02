@@ -3,14 +3,14 @@ require 'test_helper'
 class TestToriDefine < Test::Unit::TestCase
   setup do
     @orig = Tori.config.filename_callback
-    Tori.config.filename_callback = ->(model){
+    Tori.config.filename_callback do |model|
       model
-    }
+    end
     Tori.config.backend = Tori::Backend::FileSystem.new Pathname("test").join("tmp")
   end
 
   teardown do
-    Tori.config.filename_callback = @orig
+    Tori.config.filename_callback &@orig
     FileUtils.rm_rf("test/tmp")
   end
 

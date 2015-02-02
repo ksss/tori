@@ -71,9 +71,9 @@ photo.image.to_s #=> filename
 Tori.config.backend = Tori::Backend::FileSystem(Pathname("public/tori"))
 
 # filename decided by model.class.name,id,created_at and hidden words.
-Tori.config.filename_callback = ->(model){
+Tori.config.filename_callback do |model|
   Digest::MD5.hexdigest "#{model.class.name}/#{model.id}/#{model.created_at}+#{ENV['TORI_MAGICKWORD']}"
-}
+end
 ```
 
 # Default configure
