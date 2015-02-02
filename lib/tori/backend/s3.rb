@@ -18,7 +18,7 @@ module Tori
         @bucket = s3.buckets[bucket]
       end
 
-      def copy(form_path, to_filename)
+      def copy(form_path, filename)
         objects[filename].write(file: form_path)
       end
 
