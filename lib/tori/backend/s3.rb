@@ -36,6 +36,9 @@ module Tori
       end
 
       private
+      def url(filename)
+        object(filename).url_for(:read)
+      end
 
       def object(filename)
         @bucket.objects[filename]
