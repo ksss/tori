@@ -19,25 +19,26 @@ module Tori
       end
 
       def copy(form_path, filename)
-        objects[filename].write(file: form_path)
+        object(filename).write(file: form_path)
       end
 
       def delete(filename)
-        objects[filename].delete
+        object(filename).delete
       end
 
       def exist?(filename)
-        objects[filename].exists?
+        object(filename).exists?
       end
       alias exists? exist?
 
       def read(filename)
-        objects[filename].read
+        object(filename).read
       end
 
       private
-      def objects
-        @bucket.objects
+
+      def object(filename)
+        @bucket.objects[filename]
       end
     end
   end
