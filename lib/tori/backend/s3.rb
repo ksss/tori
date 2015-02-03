@@ -29,6 +29,7 @@ module Tori
       def exist?(filename)
         objects[filename].exists?
       end
+      alias exists? exist?
 
       def read(filename)
         objects[filename].read

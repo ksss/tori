@@ -18,6 +18,7 @@ module Tori
       def exist?(filename)
         ::File.exist? path(filename)
       end
+      alias exists? exist?
 
       def read(filename)
         ::File.read path(filename)
