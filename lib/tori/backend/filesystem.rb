@@ -24,7 +24,6 @@ module Tori
         ::File.read path(filename)
       end
 
-      private
       def path(filename)
         @root.join filename.to_s
       end
