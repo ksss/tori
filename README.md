@@ -82,7 +82,3 @@ end
 [https://github.com/ksss/tori/blob/master/lib/tori.rb](https://github.com/ksss/tori/blob/master/lib/tori.rb)
 
 You can change configure any time.
-
-# future TODO
-
-- support background S3 Storage
