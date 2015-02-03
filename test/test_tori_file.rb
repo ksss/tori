@@ -44,4 +44,9 @@ class TestToriDefine < Test::Unit::TestCase
     Tori::File.new("copy", from: From.new).copy
     assert { true == File.exist?("test/tmp/copy") }
   end
+
+  test "#method_missing" do
+    assert { true == Tori::File.new(nil).respond_to?(:read) }
+    assert_raise(NameError) { Tori::File.new(nil).undefined }
+  end
 end

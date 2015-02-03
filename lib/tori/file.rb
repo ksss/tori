@@ -10,18 +10,10 @@ module Tori
     end
     alias to_s name
 
-    def exist?
-      Tori.config.backend.exist? name
-    end
-
     def copy?
       !@model.nil? && !@from.nil? && @from.respond_to?(:path) && 0 < name.length
     rescue NameError => e
       false
-    end
-
-    def read
-      Tori.config.backend.read name
     end
 
     def copy
@@ -30,6 +22,18 @@ module Tori
 
     def delete
       Tori.config.backend.delete name if exist?
+    end
+
+    def respond_to_missing?(sym, include_private)
+      Tori.config.backend.respond_to?(sym, include_private)
+    end
+
+    def method_missing(sym)
+      if respond_to_missing?(sym, false)
+        Tori.config.backend.__send__ sym, name
+      else
+        fail NameError, "undefined local variable or method `#{sym}' for #{Tori.config.backend.inspect}"
+      end
     end
   end
 end
