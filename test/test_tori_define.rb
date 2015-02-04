@@ -15,7 +15,9 @@ class TestToriDefine < Test::Unit::TestCase
   end
 
   test "defined methods" do
-    assert_instance_of Uploader, Dammy.new.test_image = Uploader.new
-    assert_instance_of Tori::File, Dammy.new.test_image
+    dammy = Dammy.new
+    assert_instance_of Tori::File, dammy.test_image
+    assert_instance_of Uploader, dammy.test_image = Uploader.new
+    assert_instance_of Tori::File, dammy.test_image
   end
 end
