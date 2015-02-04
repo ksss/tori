@@ -22,7 +22,7 @@ module Tori
         # It take 'aws-sdk' gem.
         # S3 example
         #   require 'tori/backend/s3'
-        #   config.backend = Tori::Backend::S3.new('tori_bucket')
+        #   config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
 
         # Filename hashing method
         #   It's call when decide filename hash.

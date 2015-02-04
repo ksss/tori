@@ -69,7 +69,7 @@ photo.image.to_s #=> filename
 ```ruby
 # Save to S3 bucket.
 require 'tori/backend/s3'
-Tori.config.backend = Tori::Backend::S3.new('tori_bucket')
+Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
 
 # Filename decided by model.class.name,id and hidden words.
 Tori.config.filename_callback do |model|
