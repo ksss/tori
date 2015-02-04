@@ -61,7 +61,7 @@ You can read file.
 ```ruby
 photo.image.read #=> image bin
 photo.image.exist? #=> exist check
-photo.image.to_s #=> filename
+photo.image.name #=> filename
 ```
 
 # Custom configure example
