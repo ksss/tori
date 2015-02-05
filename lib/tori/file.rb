@@ -28,11 +28,11 @@ module Tori
       Tori.config.backend.respond_to?(sym, include_private)
     end
 
-    def method_missing(sym)
+    def method_missing(sym, *args)
       if respond_to_missing?(sym, false)
-        Tori.config.backend.__send__ sym, name
+        Tori.config.backend.__send__ sym, name, *args
       else
-        fail NameError, "undefined local variable or method `#{sym}' for #{Tori.config.backend.inspect}"
+        fail NameError, "undefined method `#{sym}' for #{Tori.config.backend.inspect}"
       end
     end
   end
