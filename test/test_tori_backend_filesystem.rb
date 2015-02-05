@@ -1,12 +1,6 @@
 require 'test_helper'
 
 class TestToriBackendFileSystem < Test::Unit::TestCase
-  class Uploader
-    def path
-      "test/tmp/uploader"
-    end
-  end
-
   setup do
     path = Pathname("test/tmp/tori/store")
     @filesystem = Tori::Backend::FileSystem.new(path)
