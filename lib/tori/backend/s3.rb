@@ -35,8 +35,12 @@ module Tori
         object(filename).read
       end
 
-      def url(filename)
-        object(filename).url_for(:read)
+      def public_url(filename)
+        object(filename).public_url
+      end
+
+      def url_for(filename, method)
+        object(filename).url_for(method)
       end
 
       def object(filename)
