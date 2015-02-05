@@ -4,6 +4,7 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
   setup do
     path = Pathname("test/tmp/tori/store")
     @filesystem = Tori::Backend::FileSystem.new(path)
+    File.open(@filesystem.root.join("testfile"), 'w+'){ |f| f.write('text') }
   end
 
   teardown do
@@ -21,9 +22,8 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
   end
 
   test "#read" do
-    FileUtils.touch @filesystem.root.join("readfile")
-    assert { "" == @filesystem.read("readfile") }
-    File.unlink @filesystem.root.join("readfile")
+    assert { "text" == @filesystem.read("testfile") }
     assert_raise(Errno::ENOENT){ @filesystem.read("nothing_file") }
   end
+
 end
