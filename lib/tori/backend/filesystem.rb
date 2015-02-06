@@ -7,8 +7,8 @@ module Tori
         FileUtils.mkdir_p @root.to_s
       end
 
-      def copy(form_path, to_filename)
-        IO.copy_stream form_path.to_s, path(to_filename)
+      def write(filename, resource)
+        IO.copy_stream resource, path(filename)
       end
 
       def delete(filename)

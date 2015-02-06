@@ -16,8 +16,10 @@ module Tori
       false
     end
 
-    def copy
-      Tori.config.backend.copy @from.path, name if copy?
+    def write
+      path = @from.path
+      path = Pathname.new(path) if path.kind_of?(String)
+      Tori.config.backend.write name, path
     end
 
     def delete

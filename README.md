@@ -16,7 +16,7 @@ You can upload file without alter database.
 Gemfile
 
 ```
-gem 'tori', require: 'tori/rails'
+gem 'tori'
 ```
 
 app/models/photo.rb
