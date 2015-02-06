@@ -3,48 +3,77 @@ require 'aws-sdk'
 module Tori
   module Backend
     class S3
-      # You must be set bucket name.
-      #   And you can configurate to S3
-      #   But, you can also configurate by AWS.config()
+      # Must be set bucket name.
+      #   And it use aws-sdk >= 2.0
+      #   ENV["TORI_ACCESS_KEY"] > aws-sdk credentials
       #
       # example:
-      #   Tori.config.backend = Tori::Backend::S3.new(
-      #     bucket: 'photos',
-      #     region: '...',
-      #     s3_encryption_key: '...'
-      #   )
-      def initialize(bucket:, **s3_config)
-        s3 = AWS::S3.new(s3_config)
-        @bucket = s3.buckets[bucket]
+      #   Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
+      def initialize(bucket:)
+        @bucket = bucket
+        @client = if ENV["TORI_ACCESS_KEY"] && ENV["TORI_SECRET_ACCESS_KEY"]
+                    Aws::S3::Client.new(
+                      access_key_id: ENV["TORI_ACCESS_KEY"],
+                      secret_access_key: ENV["TORI_SECRET_ACCESS_KEY"],
+                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region],
+                    )
+                  else
+                    Aws::S3::Client.new(
+                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region]
+                    )
+                  end
       end
 
       def write(filename, resource)
-        object(filename).write(resource)
+        ::File.open(resource) do |f|
+          @client.put_object(
+            bucket: @bucket,
+            key: filename,
+            body: f
+          )
+        end
       end
 
       def delete(filename)
-        object(filename).delete
+        @client.delete_object(
+          bucket: @bucket,
+          key: filename
+        )
       end
 
       def exist?(filename)
-        object(filename).exists?
+        @client.head_object(
+          bucket: @bucket,
+          key: filename
+        )
+      rescue Aws::S3::Errors::NoSuchKey, Aws::S3::Errors::NotFound
+        false
+      else
+        true
       end
       alias exists? exist?
 
       def read(filename)
-        object(filename).read
+        @client.get_object(
+          bucket: @bucket,
+          key: filename
+        )[:body].read
       end
 
-      def public_url(filename)
-        object(filename).public_url
+      def public_url(filename, params={})
+        scheme = params.delete(:secure) == false ? 'http' : 'https'
+
+        request = @client.build_request(:get_object)
+        request.send_request.data
+
+        url = URI.parse(request.send_request.data)
+        url.scheme = scheme
+        url.to_s
       end
 
       def url_for(filename, method)
-        object(filename).url_for(method)
-      end
-
-      def object(filename)
-        @bucket.objects[filename]
+        signer = Aws::S3::Presigner.new(client: @client)
+        signer.presigned_url(method, bucket: @bucket, key: filename)
       end
     end
   end
