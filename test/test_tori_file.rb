@@ -34,9 +34,9 @@ class TestToriDefine < Test::Unit::TestCase
     assert { false == Tori::File.new("nothing_file").exist? }
   end
 
-  test "#copy?" do
-    assert { false == Tori::File.new(__FILE__).copy? }
-    assert { true == Tori::File.new(__FILE__, from: From.new).copy? }
+  test "#from?" do
+    assert { false == Tori::File.new(__FILE__).from? }
+    assert { true == Tori::File.new(__FILE__, from: From.new).from? }
   end
 
   test "write" do

@@ -24,6 +24,14 @@ app/models/photo.rb
 ```ruby
 class Photo < ActiveRecord::Base
   tori :image
+
+  after_save do
+    image.write if image.from?
+  end
+
+  after_destroy do
+    image.delete
+  end
 end
 ```
 

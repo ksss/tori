@@ -10,10 +10,8 @@ module Tori
     end
     alias to_s name
 
-    def copy?
-      !@model.nil? && !@from.nil? && @from.respond_to?(:path) && 0 < name.length
-    rescue NameError => e
-      false
+    def from?
+      !@from.nil? && @from.respond_to?(:path)
     end
 
     def write
