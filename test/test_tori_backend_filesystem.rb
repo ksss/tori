@@ -26,6 +26,9 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
     assert_raise(Errno::ENOENT){ @filesystem.read("nothing_file") }
   end
 
+  test "#path" do
+    assert { Pathname.new("test/tmp/tori/store/testfile") == @filesystem.path("testfile") }
+  end
 
   test "#write" do
     assert { 4 == @filesystem.write("copyfile", @filesystem.path("testfile")) }
