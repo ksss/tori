@@ -8,7 +8,12 @@ module Tori
       end
 
       def write(filename, resource)
-        IO.copy_stream resource, path(filename)
+        case resource
+        when String
+          ::File.open(path(filename), 'w'){ |f| f.write resource }
+        else
+          ::IO.copy_stream resource, path(filename)
+        end
       end
 
       def delete(filename)
