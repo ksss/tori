@@ -1,20 +1,21 @@
-require 'aws-sdk'
+require 'aws-sdk-core'
 
 module Tori
   module Backend
     class S3
+      attr_accessor :bucket, :client
       # Must be set bucket name.
-      #   And it use aws-sdk >= 2.0
+      #   And it use aws-sdk-core >= 2.0
       #   ENV["TORI_ACCESS_KEY"] > aws-sdk credentials
       #
       # example:
       #   Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
       def initialize(bucket:)
         @bucket = bucket
-        @client = if ENV["TORI_ACCESS_KEY"] && ENV["TORI_SECRET_ACCESS_KEY"]
+        @client = if ENV["TORI_AWS_ACCESS_KEY_ID"] && ENV["TORI_AWS_SECRET_ACCESS_KEY"]
                     Aws::S3::Client.new(
-                      access_key_id: ENV["TORI_ACCESS_KEY"],
-                      secret_access_key: ENV["TORI_SECRET_ACCESS_KEY"],
+                      access_key_id: ENV["TORI_AWS_ACCESS_KEY_ID"],
+                      secret_access_key: ENV["TORI_AWS_SECRET_ACCESS_KEY"],
                       region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region],
                     )
                   else
@@ -25,13 +26,22 @@ module Tori
       end
 
       def write(filename, resource)
-        ::File.open(resource) do |f|
-          @client.put_object(
-            bucket: @bucket,
-            key: filename,
-            body: f
-          )
+        case resource
+        when IO
+          put filename, f
+        when String
+          put filename, resource
+        else
+          ::File.open(resource.to_path) { |f| put filename, f }
         end
+      end
+
+      def put(filename, body)
+        @client.put_object(
+          bucket: @bucket,
+          key: filename,
+          body: body
+        )
       end
 
       def delete(filename)
@@ -41,17 +51,22 @@ module Tori
         )
       end
 
-      def exist?(filename)
-        @client.head_object(
-          bucket: @bucket,
-          key: filename
-        )
+      def exist?(filename = nil)
+        head filename
       rescue Aws::S3::Errors::NoSuchKey, Aws::S3::Errors::NotFound
         false
       else
         true
       end
       alias exists? exist?
+
+      def head(filename = nil)
+        if filename
+          @client.head_object bucket: @bucket, key: filename
+        else
+          @client.head_bucket bucket: @bucket
+        end
+      end
 
       def read(filename)
         @client.get_object(
@@ -61,14 +76,7 @@ module Tori
       end
 
       def public_url(filename, params={})
-        scheme = params.delete(:secure) == false ? 'http' : 'https'
-
-        request = @client.build_request(:get_object)
-        request.send_request.data
-
-        url = URI.parse(request.send_request.data)
-        url.scheme = scheme
-        url.to_s
+        "#{@client.config.endpoint}/#{@bucket}/#{filename}"
       end
 
       def url_for(filename, method)

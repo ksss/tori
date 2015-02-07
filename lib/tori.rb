@@ -19,7 +19,7 @@ module Tori
         config.backend = Tori::Backend::FileSystem.new(Pathname("tmp/tori"))
 
         # You can also use S3 backend.
-        # It take 'aws-sdk' gem.
+        # It take 'aws-sdk-core' gem.
         # S3 example
         #   require 'tori/backend/s3'
         #   config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
