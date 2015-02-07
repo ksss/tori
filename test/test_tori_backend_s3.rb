@@ -1,6 +1,7 @@
 require 'test_helper'
-require 'aws-sdk-core'
 require 'tori/backend/s3'
+
+if ENV["TORI_TEST_BUCKET"]
 
 class TestToriBackendS3 < Test::Unit::TestCase
   BucketNotFoundError = Class.new(StandardError)
@@ -53,4 +54,6 @@ class TestToriBackendS3 < Test::Unit::TestCase
     assert_match @backend.bucket, @backend.public_url("testfile")
     assert_match "testfile", @backend.public_url("testfile")
   end
+end
+
 end
