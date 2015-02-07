@@ -5,7 +5,7 @@ require 'tori/backend/s3'
 class TestToriBackendS3 < Test::Unit::TestCase
   BucketNotFoundError = Class.new(StandardError)
   setup do
-    @backend = Tori::Backend::S3.new(bucket: 'tori-testing')
+    @backend = Tori::Backend::S3.new(bucket: ENV["TORI_TEST_BUCKET"])
     fail BucketNotFoundError, "S3 test need make s3 bucket '#{@backend.bucket}'" unless @backend.exists?
 
     @testfile_path = Pathname.new("test/tmp/testfile")
