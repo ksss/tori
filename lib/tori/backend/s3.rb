@@ -36,14 +36,6 @@ module Tori
         end
       end
 
-      def put(filename, body)
-        @client.put_object(
-          bucket: @bucket,
-          key: filename,
-          body: body
-        )
-      end
-
       def delete(filename)
         @client.delete_object(
           bucket: @bucket,
@@ -60,14 +52,6 @@ module Tori
       end
       alias exists? exist?
 
-      def head(filename = nil)
-        if filename
-          @client.head_object bucket: @bucket, key: filename
-        else
-          @client.head_bucket bucket: @bucket
-        end
-      end
-
       def read(filename)
         @client.get_object(
           bucket: @bucket,
@@ -82,6 +66,24 @@ module Tori
       def url_for(filename, method)
         signer = Aws::S3::Presigner.new(client: @client)
         signer.presigned_url(method, bucket: @bucket, key: filename)
+      end
+
+      private
+
+      def put(filename, body)
+        @client.put_object(
+          bucket: @bucket,
+          key: filename,
+          body: body
+        )
+      end
+
+      def head(filename = nil)
+        if filename
+          @client.head_object bucket: @bucket, key: filename
+        else
+          @client.head_bucket bucket: @bucket
+        end
       end
     end
   end
