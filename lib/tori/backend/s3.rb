@@ -59,7 +59,7 @@ module Tori
         )[:body].read
       end
 
-      def public_url(filename, params={})
+      def public_url(filename)
         "#{@client.config.endpoint}/#{@bucket}/#{filename}"
       end
 
