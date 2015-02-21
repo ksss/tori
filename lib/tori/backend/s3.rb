@@ -3,7 +3,7 @@ require 'aws-sdk-core'
 module Tori
   module Backend
     class S3
-      attr_accessor :bucket, :client
+      attr_accessor :bucket
       # Must be set bucket name.
       #   And it use aws-sdk-core >= 2.0
       #   ENV["TORI_ACCESS_KEY"] > aws-sdk credentials
@@ -12,17 +12,7 @@ module Tori
       #   Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
       def initialize(bucket:)
         @bucket = bucket
-        @client = if ENV["TORI_AWS_ACCESS_KEY_ID"] && ENV["TORI_AWS_SECRET_ACCESS_KEY"]
-                    Aws::S3::Client.new(
-                      access_key_id: ENV["TORI_AWS_ACCESS_KEY_ID"],
-                      secret_access_key: ENV["TORI_AWS_SECRET_ACCESS_KEY"],
-                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region],
-                    )
-                  else
-                    Aws::S3::Client.new(
-                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region]
-                    )
-                  end
+        @client = nil
       end
 
       def write(filename, resource)
@@ -37,10 +27,7 @@ module Tori
       end
 
       def delete(filename)
-        @client.delete_object(
-          bucket: @bucket,
-          key: filename
-        )
+        delete_object key: filename
       end
 
       def exist?(filename = nil)
@@ -53,37 +40,80 @@ module Tori
       alias exists? exist?
 
       def read(filename)
-        @client.get_object(
-          bucket: @bucket,
+        body(filename).read
+      end
+
+      def body(filename)
+        get_object(
           key: filename
-        )[:body].read
+        )[:body]
+      end
+
+      def put(filename, body)
+        put_object key: filename, body: body
+      end
+
+      def head(filename = nil)
+        if filename
+          head_object key: filename
+        else
+          head_bucket
+        end
       end
 
       def public_url(filename)
-        "#{@client.config.endpoint}/#{@bucket}/#{filename}"
+        "#{client.config.endpoint}/#{@bucket}/#{filename}"
       end
 
       def url_for(filename, method)
-        signer = Aws::S3::Presigner.new(client: @client)
+        signer = Aws::S3::Presigner.new(client: client)
         signer.presigned_url(method, bucket: @bucket, key: filename)
       end
 
       private
 
-      def put(filename, body)
-        @client.put_object(
+      def client
+        @client ||= if ENV["TORI_AWS_ACCESS_KEY_ID"] && ENV["TORI_AWS_SECRET_ACCESS_KEY"]
+                    Aws::S3::Client.new(
+                      access_key_id: ENV["TORI_AWS_ACCESS_KEY_ID"],
+                      secret_access_key: ENV["TORI_AWS_SECRET_ACCESS_KEY"],
+                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region],
+                    )
+                  else
+                    Aws::S3::Client.new(
+                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region]
+                    )
+                  end
+      end
+
+      def get_object(key:)
+        client.get_object(
           bucket: @bucket,
-          key: filename,
-          body: body
+          key: key,
         )
       end
 
-      def head(filename = nil)
-        if filename
-          @client.head_object bucket: @bucket, key: filename
-        else
-          @client.head_bucket bucket: @bucket
-        end
+      def head_object(key:)
+        client.head_object bucket: @bucket, key: key
+      end
+
+      def head_bucket
+        client.head_bucket bucket: @bucket
+      end
+
+      def put_object(key:, body:)
+        client.put_object(
+          bucket: @bucket,
+          key: key,
+          body: body,
+        )
+      end
+
+      def delete_object(key:)
+        client.delete_object(
+          bucket: @bucket,
+          key: key,
+        )
       end
     end
   end
