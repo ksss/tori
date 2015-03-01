@@ -87,10 +87,7 @@ module Tori
       end
 
       def get_object(key:)
-        client.get_object(
-          bucket: @bucket,
-          key: key,
-        )
+        client.get_object bucket: @bucket, key: key
       end
 
       def head_object(key:)
@@ -102,18 +99,11 @@ module Tori
       end
 
       def put_object(key:, body:)
-        client.put_object(
-          bucket: @bucket,
-          key: key,
-          body: body,
-        )
+        client.put_object bucket: @bucket, key: key, body: body
       end
 
       def delete_object(key:)
-        client.delete_object(
-          bucket: @bucket,
-          key: key,
-        )
+        client.delete_object bucket: @bucket, key: key
       end
     end
   end
