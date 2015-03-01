@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TestToriDefine < Test::Unit::TestCase
+class TestToriFile < Test::Unit::TestCase
   setup do
     @orig = Tori.config.filename_callback
     Tori.config.filename_callback do |model|
