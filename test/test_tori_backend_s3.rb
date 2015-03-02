@@ -36,9 +36,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
   end
 
   test "#read" do
-    # Incredible, Cannot continue run code thereafter
-    # when call aws-sdk-core s3:get_object
-    # assert { "text" == @backend.read("testfile") }
+    assert_equal "text", @backend.read("testfile")
   end
 
   test "#exists?" do
