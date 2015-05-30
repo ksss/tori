@@ -41,5 +41,11 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
 
     @filesystem.write("copyfile", "string")
     assert { "string" == @filesystem.read("copyfile") }
+
+    @filesystem.write(Pathname.new("copyfile"), @filesystem.path("testfile"))
+    assert { "text" == @filesystem.read("copyfile") }
+
+    @filesystem.write(Pathname.new("copyfile"), "string")
+    assert { "string" == @filesystem.read("copyfile") }
   end
 end

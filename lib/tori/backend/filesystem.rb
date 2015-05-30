@@ -11,6 +11,9 @@ module Tori
         case resource
         when String
           ::File.open(path(filename), 'w'){ |f| f.write resource }
+        # see also https://bugs.ruby-lang.org/issues/11199
+        when Pathname
+          ::IO.copy_stream resource.to_s, path(filename)
         else
           ::IO.copy_stream resource, path(filename)
         end
