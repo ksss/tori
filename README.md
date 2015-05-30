@@ -1,6 +1,8 @@
 Tori
 ===
 
+[![Build Status](https://travis-ci.org/ksss/tori.svg?branch=master)](https://travis-ci.org/ksss/tori)
+
 "(\\( ⁰⊖⁰)/)"
 
 Tori is a very very simple file uploader.
