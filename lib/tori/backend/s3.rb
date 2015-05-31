@@ -76,8 +76,6 @@ module Tori
         signer.presigned_url(method, bucket: @bucket, key: filename)
       end
 
-      private
-
       def client
         @client ||= if ENV["TORI_AWS_ACCESS_KEY_ID"] && ENV["TORI_AWS_SECRET_ACCESS_KEY"]
                       Aws::S3::Client.new(
