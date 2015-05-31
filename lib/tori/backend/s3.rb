@@ -1,8 +1,10 @@
 require 'aws-sdk-core'
+require 'mime/types'
 
 module Tori
   module Backend
     class S3
+      DEFAULT_CONTENT_TYPE = 'plain/text'.freeze
       attr_accessor :bucket
       # Must be set bucket name.
       #   And it use aws-sdk-core >= 2.0
@@ -17,12 +19,16 @@ module Tori
 
       def write(filename, resource)
         case resource
-        when IO
-          put filename, f
         when String
-          put filename, resource
+          put_object key: filename, body: resource, content_type: DEFAULT_CONTENT_TYPE
+        when File, Pathname
+          path = resource.to_path
+          content_type = MIME::Types.type_for(path).first || DEFAULT_CONTENT_TYPE
+          ::File.open(path) { |f|
+            put_object key: filename, body: f, content_type: content_type.to_s, content_length: f.size
+          }
         else
-          ::File.open(resource.to_path) { |f| put filename, f }
+          put_object key: filename, body: resource
         end
       end
 
@@ -98,8 +104,8 @@ module Tori
         client.head_bucket bucket: @bucket
       end
 
-      def put_object(key:, body:)
-        client.put_object bucket: @bucket, key: key, body: body
+      def put_object(opts = {})
+        client.put_object({bucket: @bucket}.merge(opts))
       end
 
       def delete_object(key:)
