@@ -33,6 +33,10 @@ class TestToriBackendS3 < Test::Unit::TestCase
 
   test "#write" do
     assert_nothing_raised { @backend.write("testfile", @testfile_path) }
+    testfile = @backend.get_object(key: "testfile")
+    assert { "plain/text" == testfile.content_type }
+    assert { 4 == testfile.content_length }
+    assert { "text" == testfile[:body].read }
   end
 
   test "#read" do
