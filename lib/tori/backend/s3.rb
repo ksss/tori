@@ -80,16 +80,16 @@ module Tori
 
       def client
         @client ||= if ENV["TORI_AWS_ACCESS_KEY_ID"] && ENV["TORI_AWS_SECRET_ACCESS_KEY"]
-                    Aws::S3::Client.new(
-                      access_key_id: ENV["TORI_AWS_ACCESS_KEY_ID"],
-                      secret_access_key: ENV["TORI_AWS_SECRET_ACCESS_KEY"],
-                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region],
-                    )
-                  else
-                    Aws::S3::Client.new(
-                      region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region]
-                    )
-                  end
+                      Aws::S3::Client.new(
+                        access_key_id: ENV["TORI_AWS_ACCESS_KEY_ID"],
+                        secret_access_key: ENV["TORI_AWS_SECRET_ACCESS_KEY"],
+                        region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region],
+                      )
+                    else
+                      Aws::S3::Client.new(
+                        region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region]
+                      )
+                    end
       end
 
       def get_object(key:)
