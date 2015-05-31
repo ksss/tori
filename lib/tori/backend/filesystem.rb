@@ -14,6 +14,7 @@ module Tori
         when Pathname
           # see also https://bugs.ruby-lang.org/issues/11199
           ::File.open(resource) { |src|
+            FileUtils.mkdir_p path(filename).dirname
             ::File.open(path(filename), 'w'){ |dst|
               ::IO.copy_stream src, dst
             }
