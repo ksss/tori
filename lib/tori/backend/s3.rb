@@ -4,7 +4,7 @@ require 'mime/types'
 module Tori
   module Backend
     class S3
-      DEFAULT_CONTENT_TYPE = 'plain/text'.freeze
+      DEFAULT_CONTENT_TYPE = 'text/plain'.freeze
       attr_accessor :bucket
       # Must be set bucket name.
       #   And it use aws-sdk-core >= 2.0
