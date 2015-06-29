@@ -23,10 +23,12 @@ class TestToriFile < Test::Unit::TestCase
   test "#initialize" do
     assert_instance_of Tori::File, Tori::File.new(nil)
     assert_instance_of Tori::File, Tori::File.new(nil, from: nil)
+    assert_instance_of Tori::File, Tori::File.new(nil, from: nil) { }
   end
 
   test "#name" do
     assert { "test" == Tori::File.new("test").name }
+    assert { "String/test/sub" == Tori::File.new("test"){ |m| "#{m.class}/#{m}/sub"}.name }
   end
 
   test "#exist?" do

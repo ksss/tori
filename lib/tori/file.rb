@@ -1,12 +1,17 @@
 module Tori
   class File
-    def initialize(model, from: nil)
+    def initialize(model, from: nil, &block)
       @model = model
       @from = from
+      @filename_callback = block
     end
 
     def name
-      Tori.config.filename_callback.call(@model)
+      if @filename_callback
+        @filename_callback.call(@model)
+      else
+        Tori.config.filename_callback.call(@model)
+      end
     end
     alias to_s name
 
