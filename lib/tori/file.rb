@@ -19,10 +19,10 @@ module Tori
       !@from.nil? && @from.respond_to?(:path)
     end
 
-    def write
+    def write(opts = nil)
       path = @from.path
       path = Pathname.new(path) if path.kind_of?(String)
-      Tori.config.backend.write name, path
+      Tori.config.backend.write name, path, opts
     end
 
     def delete

@@ -17,18 +17,31 @@ module Tori
         @client = nil
       end
 
-      def write(filename, resource)
+      def write(filename, resource, opts = nil)
+        opts ||= {}
         case resource
         when String
-          put_object key: filename, body: resource, content_type: DEFAULT_CONTENT_TYPE
+          put_object({
+            key: filename,
+            body: resource,
+            content_type: DEFAULT_CONTENT_TYPE,
+          }.merge(opts))
         when File, Pathname
           path = resource.to_path
           content_type = MIME::Types.type_for(path).first || DEFAULT_CONTENT_TYPE
           ::File.open(path) { |f|
-            put_object key: filename, body: f, content_type: content_type.to_s, content_length: f.size
+            put_object({
+              key: filename,
+              body: f,
+              content_type: content_type.to_s,
+              content_length: f.size,
+            }.merge(opts))
           }
         else
-          put_object key: filename, body: resource
+          put_object({
+            key: filename,
+            body: resource,
+          }.merge(opts))
         end
       end
 

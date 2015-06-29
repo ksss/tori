@@ -5,6 +5,14 @@ if ENV["TORI_TEST_BUCKET"]
 
 class TestToriBackendS3 < Test::Unit::TestCase
   BucketNotFoundError = Class.new(StandardError)
+  def request_head(url)
+    uri = URI.parse(url)
+    req = Net::HTTP::Head.new(uri.path)
+    Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https') { |http|
+      http.request req
+    }
+  end
+
   setup do
     @backend = Tori::Backend::S3.new(bucket: ENV["TORI_TEST_BUCKET"])
     fail BucketNotFoundError, "S3 test need make s3 bucket '#{@backend.bucket}'" unless @backend.exists?
@@ -31,12 +39,27 @@ class TestToriBackendS3 < Test::Unit::TestCase
     end
   end
 
-  test "#write" do
+  test "#write String" do
+    @backend.write("testfile", "foo", content_type: "image/png")
+    testfile = @backend.get_object(key: "testfile")
+    assert { "image/png" == testfile.content_type }
+    assert { "foo" == testfile[:body].read }
+  end
+
+  test "#write Pathname" do
     assert_nothing_raised { @backend.write("testfile", @testfile_path) }
     testfile = @backend.get_object(key: "testfile")
-    assert { "plain/text" == testfile.content_type }
+    assert { "text/plain" == testfile.content_type }
     assert { 4 == testfile.content_length }
     assert { "text" == testfile[:body].read }
+
+    @backend.write("testfile", @testfile_path, acl: "public-read-write")
+    res = request_head(@backend.public_url("testfile"))
+    assert { Net::HTTPOK === res}
+
+    @backend.write("testfile", @testfile_path, acl: "private")
+    res = request_head(@backend.public_url("testfile"))
+    assert { Net::HTTPForbidden === res}
   end
 
   test "#read" do

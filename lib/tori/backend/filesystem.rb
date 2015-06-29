@@ -7,7 +7,7 @@ module Tori
         FileUtils.mkdir_p @root.to_s
       end
 
-      def write(filename, resource)
+      def write(filename, resource, opts = nil)
         case resource
         when String
           ::File.open(path(filename), 'w'){ |f| f.write resource }
