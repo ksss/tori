@@ -41,6 +41,7 @@ module Tori
           put_object({
             key: filename,
             body: resource,
+            content_type: DEFAULT_CONTENT_TYPE,
           }.merge(opts))
         end
       end
