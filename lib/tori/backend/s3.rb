@@ -10,7 +10,7 @@ module Tori
 
       # Must be set bucket name.
       #   And it use aws-sdk-core >= 2.0
-      #   ENV["TORI_ACCESS_KEY"] > aws-sdk credentials
+      #   ENV takes precedence over credentials file and instance profile
       #
       # example:
       #   Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
