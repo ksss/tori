@@ -6,15 +6,35 @@ module Tori
     class S3
       DEFAULT_CONTENT_TYPE = 'text/plain'.freeze
       attr_accessor :bucket
+      attr_reader   :client
+
       # Must be set bucket name.
       #   And it use aws-sdk-core >= 2.0
       #   ENV["TORI_ACCESS_KEY"] > aws-sdk credentials
       #
       # example:
       #   Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
-      def initialize(bucket:)
-        @bucket = bucket
-        @client = nil
+      def initialize(options = {})
+        @bucket = options[:bucket] || (fail ArgumentError, 'missing keyword: bucket')
+
+        region =
+          options[:region] || ENV['TORI_AWS_REGION'] || ENV['AWS_REGION'] || Aws.config[:region]
+        @client =
+          case
+          when options[:access_key_id] && option[:secret_access_key]
+            Aws::S3::Client.new(
+              access_key_id:     options[:access_key_id],
+              secret_access_key: options[:secret_access_key],
+              region:            region)
+          when ENV['TORI_AWS_ACCESS_KEY_ID'] && ENV['TORI_AWS_SECRET_ACCESS_KEY']
+            Aws::S3::Client.new(
+              access_key_id:     ENV['TORI_AWS_ACCESS_KEY_ID'],
+              secret_access_key: ENV['TORI_AWS_SECRET_ACCESS_KEY'],
+              region:            region)
+          else
+            # Use instance profile or credentials file (~/.aws/credentials)
+            Aws::S3::Client.new(region: region)
+          end
       end
 
       def write(filename, resource, opts = nil)
@@ -88,20 +108,6 @@ module Tori
       def url_for(filename, method)
         signer = Aws::S3::Presigner.new(client: client)
         signer.presigned_url(method, bucket: @bucket, key: filename)
-      end
-
-      def client
-        @client ||= if ENV["TORI_AWS_ACCESS_KEY_ID"] && ENV["TORI_AWS_SECRET_ACCESS_KEY"]
-                      Aws::S3::Client.new(
-                        access_key_id: ENV["TORI_AWS_ACCESS_KEY_ID"],
-                        secret_access_key: ENV["TORI_AWS_SECRET_ACCESS_KEY"],
-                        region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region],
-                      )
-                    else
-                      Aws::S3::Client.new(
-                        region: ENV["TORI_AWS_REGION"] || ENV['AWS_REGION'] || Aws.config[:region]
-                      )
-                    end
       end
 
       def get_object(key:)
