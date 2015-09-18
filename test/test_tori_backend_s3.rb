@@ -30,7 +30,24 @@ class TestToriBackendS3 < Test::Unit::TestCase
 
   test "#initialize" do
     assert_instance_of Tori::Backend::S3, @backend
+    assert { ENV["TORI_AWS_ACCESS_KEY_ID"] == @backend.client.config.access_key_id }
+    assert { ENV["TORI_AWS_SECRET_ACCESS_KEY"] == @backend.client.config.secret_access_key }
+
+    custom_backend = Tori::Backend::S3.new(
+      bucket: ENV["TORI_TEST_BUCKET"],
+      client: Aws::S3::Client.new(access_key_id: 'aaa', secret_access_key: 'bbb'),
+    )
+    assert_instance_of Tori::Backend::S3, custom_backend
+    assert { 'aaa' == custom_backend.client.config.access_key_id }
+    assert { 'bbb' == custom_backend.client.config.secret_access_key }
+
     assert_raise(ArgumentError){ Tori::Backend::S3.new }
+    assert_raise(TypeError) {
+      Tori::Backend::S3.new(
+        bucket: ENV["TORI_TEST_BUCKET"],
+        client: Object.new,
+      )
+    }
   end
 
   test "#respond_to_missing?" do

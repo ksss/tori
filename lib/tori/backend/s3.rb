@@ -14,27 +14,26 @@ module Tori
       #
       # example:
       #   Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
-      def initialize(options = {})
-        @bucket = options[:bucket] || (fail ArgumentError, 'missing keyword: bucket')
-
-        region =
-          options[:region] || ENV['TORI_AWS_REGION'] || ENV['AWS_REGION'] || Aws.config[:region]
-        @client =
-          case
-          when options[:access_key_id] && option[:secret_access_key]
-            Aws::S3::Client.new(
-              access_key_id:     options[:access_key_id],
-              secret_access_key: options[:secret_access_key],
-              region:            region)
-          when ENV['TORI_AWS_ACCESS_KEY_ID'] && ENV['TORI_AWS_SECRET_ACCESS_KEY']
-            Aws::S3::Client.new(
-              access_key_id:     ENV['TORI_AWS_ACCESS_KEY_ID'],
-              secret_access_key: ENV['TORI_AWS_SECRET_ACCESS_KEY'],
-              region:            region)
-          else
-            # Use instance profile or credentials file (~/.aws/credentials)
-            Aws::S3::Client.new(region: region)
+      def initialize(bucket:, client: nil)
+        @bucket = bucket
+        if client
+          unless client.kind_of?(Aws::S3::Client)
+            raise TypeError, "client should be instance of Aws::S3::Client or nil"
           end
+          @client = client
+        else
+          region = ENV['TORI_AWS_REGION'] || ENV['AWS_REGION'] || Aws.config[:region]
+          @client = if ENV['TORI_AWS_ACCESS_KEY_ID'] && ENV['TORI_AWS_SECRET_ACCESS_KEY']
+                      Aws::S3::Client.new(
+                        access_key_id:     ENV['TORI_AWS_ACCESS_KEY_ID'],
+                        secret_access_key: ENV['TORI_AWS_SECRET_ACCESS_KEY'],
+                        region:            region,
+                      )
+                    else
+                      # Use instance profile or credentials file (~/.aws/credentials)
+                      Aws::S3::Client.new(region: region)
+                    end
+        end
       end
 
       def write(filename, resource, opts = nil)
