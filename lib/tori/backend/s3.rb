@@ -14,6 +14,15 @@ module Tori
       #
       # example:
       #   Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
+      #   # or
+      #   Tori.config.backend = Tori::Backend::S3.new(
+      #     bucket: 'tori_bucket',
+      #     client: Aws::S3::Client.new(
+      #       access_key_id: 'your_access_key',
+      #       secret_access_key: 'your_secret_access_key',
+      #       region: 'your-region-1'
+      #     )
+      #   )
       def initialize(bucket:, client: nil)
         @bucket = bucket
         if client
