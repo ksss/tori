@@ -24,6 +24,9 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
   test "#read" do
     assert { "text" == @filesystem.read("testfile") }
     assert_raise(Errno::ENOENT){ @filesystem.read("nothing_file") }
+    bin = (0..0xFF).to_a.pack("c*")
+    File.open(@filesystem.root.join("binfile"), 'wb'){ |f| f.write bin }
+    assert { bin == @filesystem.read("binfile") }
   end
 
   test "#path" do
@@ -41,6 +44,10 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
 
     @filesystem.write("copyfile", "string")
     assert { "string" == @filesystem.read("copyfile") }
+
+    bin = (0..0xFF).to_a.pack("c*")
+    @filesystem.write("binfile", bin)
+    assert { bin == @filesystem.read("binfile") }
 
     @filesystem.write(Pathname.new("copyfile"), @filesystem.path("testfile"))
     assert { "text" == @filesystem.read("copyfile") }
