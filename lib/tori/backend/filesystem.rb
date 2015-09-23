@@ -10,17 +10,17 @@ module Tori
       def write(filename, resource, opts = nil)
         case resource
         when String
-          ::File.open(path(filename), 'w'){ |f| f.write resource }
+          ::File.open(path(filename), 'wb'){ |f| f.write resource }
         when Pathname
           # see also https://bugs.ruby-lang.org/issues/11199
           ::File.open(resource) { |src|
             FileUtils.mkdir_p path(filename).dirname
-            ::File.open(path(filename), 'w'){ |dst|
+            ::File.open(path(filename), 'wb'){ |dst|
               ::IO.copy_stream src, dst
             }
           }
         else
-          ::File.open(path(filename), 'w') do |dst|
+          ::File.open(path(filename), 'wb') do |dst|
             ::IO.copy_stream resource, dst
           end
         end
@@ -36,7 +36,7 @@ module Tori
       alias exists? exist?
 
       def read(filename)
-        ::File.read path(filename)
+        ::File.read(path(filename), mode: 'rb')
       end
 
       def path(filename)
