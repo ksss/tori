@@ -26,7 +26,7 @@ module Tori
 
         # Filename hashing method
         #   It's call when decide filename hash.
-        config.filename_callback do |model|
+        config.filename_callback do |model, key|
           Digest::SHA1.hexdigest "#{model.class.name}/#{model.id}"
         end
       end

@@ -5,11 +5,11 @@ module Tori
 
       define_method(name) do
         ivar = instance_variable_get name_ivar
-        ivar || instance_variable_set(name_ivar, File.new(self, &block))
+        ivar || instance_variable_set(name_ivar, File.new(self, name, &block))
       end
 
       define_method("#{name}=") do |uploader|
-        file = File.new(self, from: uploader, &block)
+        file = File.new(self, name, from: uploader, &block)
         instance_variable_set name_ivar, file
       end
     end

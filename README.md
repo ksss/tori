@@ -76,17 +76,17 @@ photo.image.name #=> filename
 
 # Attach example
 
-Two image file upload to backend example.
-defined method by `tori` method can define a key name for each by block.
+Example of uploadng two image files to backend.
+filename can be defined for each key if pass a block to `tori`.
 
 ```ruby
 class Photo < ActiveRecord::Base
-  tori :original_image do |model|
-    "#{model.class}/original/#{model.original_filename}"
+  tori :original_image do |model, key|
+    "#{model.class}/#{key}/#{model.original_filename}"
   end
 
-  tori :striped_image do |model|
-    "#{model.class}/striped/#{model.striped_filename}"
+  tori :striped_image do |model, key|
+    "#{model.class}/#{key}/#{model.striped_filename}"
   end
 end
 
@@ -124,7 +124,7 @@ require 'tori/backend/s3'
 Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
 
 # Filename decided by model.class.name,id and hidden words.
-Tori.config.filename_callback do |model|
+Tori.config.filename_callback do |model, key|
   "#{model.class.name}/#{Digest::SHA1.hexdigest "#{ENV["TORI_MAGICKWORD"]}/#{model.id}"}"
 end
 ```

@@ -24,29 +24,29 @@ class TestToriFile < Test::Unit::TestCase
   end
 
   test "#initialize" do
-    assert_instance_of Tori::File, Tori::File.new(nil)
-    assert_instance_of Tori::File, Tori::File.new(nil, from: nil)
-    assert_instance_of Tori::File, Tori::File.new(nil, from: nil) { }
+    assert_instance_of Tori::File, Tori::File.new(nil, nil)
+    assert_instance_of Tori::File, Tori::File.new(nil, nil, from: nil)
+    assert_instance_of Tori::File, Tori::File.new(nil, nil, from: nil) { }
   end
 
   test "#name" do
-    assert { "test" == Tori::File.new("test").name }
-    assert { "String/test/sub" == Tori::File.new("test"){ |m| "#{m.class}/#{m}/sub"}.name }
+    assert { "test" == Tori::File.new("test", nil).name }
+    assert { "String/test/sub" == Tori::File.new("test", nil){ |m| "#{m.class}/#{m}/sub"}.name }
   end
 
   test "#exist?" do
-    assert { true == Tori::File.new(__FILE__).exist? }
-    assert { false == Tori::File.new("nothing_file").exist? }
+    assert { true == Tori::File.new(__FILE__, nil).exist? }
+    assert { false == Tori::File.new("nothing_file", nil).exist? }
   end
 
   test "#from?" do
-    assert { false == Tori::File.new(__FILE__).from? }
-    assert { true == Tori::File.new(__FILE__, from: From.new).from? }
+    assert { false == Tori::File.new(__FILE__, nil).from? }
+    assert { true == Tori::File.new(__FILE__, nil, from: From.new).from? }
   end
 
   test "write" do
     assert { false == File.exist?("test/tmp/copy") }
-    Tori::File.new("copy", from: From.new).write
+    Tori::File.new("copy", nil, from: From.new).write
     assert { true == File.exist?("test/tmp/copy") }
   end
 
@@ -56,7 +56,7 @@ class TestToriFile < Test::Unit::TestCase
     Tempfile.create("tempfile") do |f|
       path = f.path
       f.write("should be match ;)")
-      tori_file = Tori::File.new("tempfile", from: f)
+      tori_file = Tori::File.new("tempfile", nil, from: f)
     end
     tori_file.write
     assert { true == File.exist?("test/tmp/tempfile") }
@@ -66,7 +66,7 @@ class TestToriFile < Test::Unit::TestCase
   end
 
   test "#method_missing" do
-    assert { true == Tori::File.new(nil).respond_to?(:read) }
-    assert_raise(NameError) { Tori::File.new(nil).undefined }
+    assert { true == Tori::File.new(nil, nil).respond_to?(:read) }
+    assert_raise(NameError) { Tori::File.new(nil, nil).undefined }
   end
 end
