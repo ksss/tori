@@ -47,6 +47,17 @@ class TestToriFile < Test::Unit::TestCase
     assert { true == File.exist?("test/tmp/copy") }
   end
 
+  test "with tempfile" do
+    t = nil
+    Tempfile.create("tempfile") do |f|
+      f.write("temp")
+      t = Tori::File.new("tempfile", from: f)
+    end
+    t.write
+    assert { true == File.exist?("test/tmp/tempfile") }
+    assert { "temp" == File.read("test/tmp/tempfile") }
+  end
+
   test "#method_missing" do
     assert { true == Tori::File.new(nil).respond_to?(:read) }
     assert_raise(NameError) { Tori::File.new(nil).undefined }
