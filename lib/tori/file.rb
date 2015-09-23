@@ -1,21 +1,29 @@
 module Tori
   class File
-    def initialize(model, from: nil, &block)
+    def initialize(model, key, from: nil, &block)
       @model = model
+      @key   = key
+
       if from.respond_to?(:read) and from.respond_to?(:rewind)
         from.rewind
         @from = from.read
       else
         @from = from
       end
+
       @filename_callback = block
     end
 
     def name
       if @filename_callback
-        @filename_callback.call(@model)
+        if @filename_callback.lambda? && @filename_callback.arity == 1
+          warn '[DEPRECATION] filename_callback should be received two arguments.'
+          @filename_callback.call(@model)
+        else
+          @filename_callback.call(@model, @key)
+        end
       else
-        Tori.config.filename_callback.call(@model)
+        Tori.config.filename_callback.call(@model, @key)
       end
     end
     alias to_s name
