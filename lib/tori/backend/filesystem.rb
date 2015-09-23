@@ -20,7 +20,9 @@ module Tori
             }
           }
         else
-          ::IO.copy_stream resource, path(filename)
+          ::File.open(path(filename), 'w') do |dst|
+            ::IO.copy_stream resource, dst
+          end
         end
       end
 

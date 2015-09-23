@@ -2,7 +2,12 @@ module Tori
   class File
     def initialize(model, from: nil, &block)
       @model = model
-      @from = from
+      if from.respond_to?(:read) and from.respond_to?(:rewind)
+        from.rewind
+        @from = from.read
+      else
+        @from = from
+      end
       @filename_callback = block
     end
 
@@ -16,13 +21,11 @@ module Tori
     alias to_s name
 
     def from?
-      !@from.nil? && @from.respond_to?(:path)
+      !@from.nil?
     end
 
     def write(opts = nil)
-      path = @from.path
-      path = Pathname.new(path) if path.kind_of?(String)
-      Tori.config.backend.write name, path, opts
+      Tori.config.backend.write name, @from, opts
     end
 
     def delete
