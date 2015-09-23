@@ -32,6 +32,8 @@ module Tori
       Tori.config.backend.delete name if exist?
     end
 
+    private
+
     def respond_to_missing?(sym, include_private)
       Tori.config.backend.respond_to?(sym, include_private)
     end

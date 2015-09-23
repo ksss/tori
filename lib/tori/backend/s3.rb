@@ -91,6 +91,17 @@ module Tori
         body(filename).read
       end
 
+      def public_url(filename)
+        "#{client.config.endpoint}/#{@bucket}/#{filename}"
+      end
+
+      def url_for(filename, method)
+        signer = Aws::S3::Presigner.new(client: client)
+        signer.presigned_url(method, bucket: @bucket, key: filename)
+      end
+
+      private
+
       def body(filename)
         get_object(
           key: filename
@@ -107,15 +118,6 @@ module Tori
         else
           head_bucket
         end
-      end
-
-      def public_url(filename)
-        "#{client.config.endpoint}/#{@bucket}/#{filename}"
-      end
-
-      def url_for(filename, method)
-        signer = Aws::S3::Presigner.new(client: client)
-        signer.presigned_url(method, bucket: @bucket, key: filename)
       end
 
       def get_object(key:)

@@ -58,14 +58,14 @@ class TestToriBackendS3 < Test::Unit::TestCase
 
   test "#write String" do
     @backend.write("testfile", "foo", content_type: "image/png")
-    testfile = @backend.get_object(key: "testfile")
+    testfile = @backend.instance_eval{ get_object(key: "testfile") }
     assert { "image/png" == testfile.content_type }
     assert { "foo" == testfile[:body].read }
   end
 
   test "#write Pathname" do
     assert_nothing_raised { @backend.write("testfile", @testfile_path) }
-    testfile = @backend.get_object(key: "testfile")
+    testfile = @backend.instance_eval{ get_object(key: "testfile") }
     assert { "text/plain" == testfile.content_type }
     assert { 4 == testfile.content_length }
     assert { "text" == testfile[:body].read }
