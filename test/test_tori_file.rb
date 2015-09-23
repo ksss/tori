@@ -15,7 +15,10 @@ class TestToriFile < Test::Unit::TestCase
   end
 
   class From
-    def path
+    def rewind
+    end
+
+    def read
       __FILE__
     end
   end
@@ -47,15 +50,19 @@ class TestToriFile < Test::Unit::TestCase
     assert { true == File.exist?("test/tmp/copy") }
   end
 
-  test "with tempfile" do
-    t = nil
+  test "write with closed file" do
+    tori_file = nil
+    path = nil
     Tempfile.create("tempfile") do |f|
-      f.write("temp")
-      t = Tori::File.new("tempfile", from: f)
+      path = f.path
+      f.write("should be match ;)")
+      tori_file = Tori::File.new("tempfile", from: f)
     end
-    t.write
+    tori_file.write
     assert { true == File.exist?("test/tmp/tempfile") }
-    assert { "temp" == File.read("test/tmp/tempfile") }
+    assert { false == File.exist?(path) }
+    assert { "should be match ;)" == File.read("test/tmp/tempfile") }
+    assert { "should be match ;)" == tori_file.read }
   end
 
   test "#method_missing" do
