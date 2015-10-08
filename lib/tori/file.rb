@@ -28,6 +28,10 @@ module Tori
       !@from.nil?
     end
 
+    def read
+      Tori.config.backend.read name
+    end
+
     def write(opts = nil)
       Tori.config.backend.write name, @from, opts
     end
