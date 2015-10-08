@@ -26,7 +26,10 @@ class TestToriFile < Test::Unit::TestCase
   test "#initialize" do
     assert_instance_of Tori::File, Tori::File.new(nil)
     assert_instance_of Tori::File, Tori::File.new(nil, from: nil)
+    assert_instance_of Tori::File, Tori::File.new(nil, title: nil)
     assert_instance_of Tori::File, Tori::File.new(nil, from: nil) { }
+    assert_raise(ArgumentError) { Tori::File.new }
+    assert_raise(ArgumentError) { Tori::File.new(nil, nothing: nil) }
   end
 
   test "#name" do
@@ -63,6 +66,16 @@ class TestToriFile < Test::Unit::TestCase
     assert { false == File.exist?(path) }
     assert { "should be match ;)" == File.read("test/tmp/tempfile") }
     assert { "should be match ;)" == tori_file.read }
+  end
+
+  test "with title" do
+    before = Tori.config.filename_callback
+    Tori.config.filename_callback do |model|
+      "#{model}/#{__tori__}"
+    end
+    assert { "test/" == Tori::File.new("test").name }
+    assert { "test/tori" == Tori::File.new("test", title: "tori").name }
+    Tori.config.filename_callback &before
   end
 
   test "#method_missing" do

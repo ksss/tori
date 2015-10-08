@@ -1,7 +1,8 @@
 module Tori
   class File
-    def initialize(model, from: nil, &block)
+    def initialize(model, title: nil, from: nil, &block)
       @model = model
+      @title = title
       if from.respond_to?(:read) and from.respond_to?(:rewind)
         from.rewind
         @from = from.read
@@ -12,10 +13,13 @@ module Tori
     end
 
     def name
+      context = Context.new(@title)
       if @filename_callback
-        @filename_callback.call(@model)
+        context.define_singleton_method(:__bind__, @filename_callback)
+        context.__bind__(@model)
       else
-        Tori.config.filename_callback.call(@model)
+        context.define_singleton_method(:__bind__, Tori.config.filename_callback)
+        context.__bind__(@model)
       end
     end
     alias to_s name

@@ -1,5 +1,6 @@
 require 'tori/backend/filesystem'
 require 'tori/config'
+require 'tori/context'
 require 'tori/define'
 require 'tori/file'
 require 'tori/version'
