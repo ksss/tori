@@ -97,8 +97,8 @@ module Tori
         )[:body]
       end
 
-      def put(filename, body)
-        put_object key: filename, body: body
+      def put(filename, body, opts={})
+        put_object key: filename, body: body, **opts
       end
 
       def head(filename = nil)
@@ -118,24 +118,24 @@ module Tori
         signer.presigned_url(method, bucket: @bucket, key: filename)
       end
 
-      def get_object(key:)
-        client.get_object bucket: @bucket, key: key
+      def get_object(opts={})
+        client.get_object bucket: @bucket, **opts
       end
 
-      def head_object(key:)
-        client.head_object bucket: @bucket, key: key
+      def head_object(opts={})
+        client.head_object bucket: @bucket, **opts
       end
 
-      def head_bucket
-        client.head_bucket bucket: @bucket
+      def head_bucket(opts={})
+        client.head_bucket bucket: @bucket, **opts
       end
 
       def put_object(opts = {})
-        client.put_object({bucket: @bucket}.merge(opts))
+        client.put_object bucket: @bucket, **opts
       end
 
-      def delete_object(key:)
-        client.delete_object bucket: @bucket, key: key
+      def delete_object(opts={})
+        client.delete_object bucket: @bucket, **opts
       end
     end
   end
