@@ -14,13 +14,13 @@ module Tori
 
     def name
       context = Context.new(@title)
-      if @filename_callback
-        context.define_singleton_method(:__bind__, @filename_callback)
-        context.__bind__(@model)
+      filename_callback = if @filename_callback
+        @filename_callback
       else
-        context.define_singleton_method(:__bind__, Tori.config.filename_callback)
-        context.__bind__(@model)
+        Tori.config.filename_callback
       end
+      context.define_singleton_method(:__filename_callback__, filename_callback)
+      context.__filename_callback__(@model)
     end
     alias to_s name
 
