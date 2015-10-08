@@ -4,8 +4,9 @@ class TestToriDefine < Test::Unit::TestCase
   class Dammy
     extend Tori::Define
     tori :test_image
+    bird = "piyo"
     tori :def_image do |model|
-      "foo/#{__tori__}/bar"
+      "foo/#{__tori__}/bar/#{bird}"
     end
   end
 
@@ -29,6 +30,6 @@ class TestToriDefine < Test::Unit::TestCase
   test "define name" do
     dammy = Dammy.new
     assert_instance_of Tori::File, dammy.def_image
-    assert { "foo/def_image/bar" == dammy.def_image.name }
+    assert { "foo/def_image/bar/piyo" == dammy.def_image.name }
   end
 end
