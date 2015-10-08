@@ -2,7 +2,7 @@ module Tori
   class File
     def initialize(model, title: nil, from: nil, &block)
       @model = model
-      @title = title
+      @title = title.kind_of?(String) ? title.to_sym : title
       if from.respond_to?(:read) and from.respond_to?(:rewind)
         from.rewind
         @from = from.read
