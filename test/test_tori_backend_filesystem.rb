@@ -55,4 +55,13 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
     @filesystem.write(Pathname.new("copyfile"), "string")
     assert { "string" == @filesystem.read("copyfile") }
   end
+
+  test "#open" do
+    @filesystem.open("testfile") do |f|
+      assert_instance_of File, f
+    end
+    f = @filesystem.open("testfile")
+    assert_instance_of File, f
+    f.close
+  end
 end

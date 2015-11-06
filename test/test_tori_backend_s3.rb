@@ -111,6 +111,18 @@ class TestToriBackendS3 < Test::Unit::TestCase
     assert_match @backend.bucket, @backend.public_url("testfile")
     assert_match "testfile", @backend.public_url("testfile")
   end
+
+  test "#open" do
+    path = nil
+    @backend.open("testfile") do |f|
+      assert_instance_of File, f
+      path = f.path
+    end
+    assert { false == File.exist?(path) }
+    f = @backend.open("testfile")
+    assert_instance_of Tempfile, f
+    f.close!
+  end
 end
 
 end

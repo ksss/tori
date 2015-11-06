@@ -130,6 +130,26 @@ module Tori
         signer.presigned_url(method, bucket: @bucket, key: filename)
       end
 
+      def open(filename)
+        ext = ::File.extname(filename)
+        body = body(filename)
+
+        if block_given?
+          Tempfile.create([filename, ext]) do |f|
+            f.write body
+            f.fsync
+            f.rewind
+            yield f
+          end
+        else
+          f = Tempfile.open([filename, ext])
+          f.write body
+          f.fsync
+          f.rewind
+          f
+        end
+      end
+
       def get_object(opts={})
         client.get_object bucket: @bucket, **opts
       end

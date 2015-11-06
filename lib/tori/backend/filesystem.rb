@@ -39,6 +39,10 @@ module Tori
         ::File.read(path(filename), mode: 'rb')
       end
 
+      def open(filename, *rest, &block)
+        ::File.open(path(filename), *rest, &block)
+      end
+
       def path(filename)
         @root.join filename.to_s
       end
