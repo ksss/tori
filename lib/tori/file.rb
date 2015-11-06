@@ -38,7 +38,7 @@ module Tori
 
     def write(opts = nil)
       opts ||= {}
-      backend.write name, @from, opts
+      backend.write name, @from, opts.merge(from_path: @from_path)
     end
 
     def delete

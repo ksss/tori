@@ -8,6 +8,12 @@ module Tori
       attr_accessor :bucket
       attr_reader   :client
 
+      class << self
+        def type_for(path)
+          (MIME::Types.type_for(path).first || DEFAULT_CONTENT_TYPE).to_s
+        end
+      end
+
       # Must be set bucket name.
       #   And it use aws-sdk-core >= 2.0
       #   ENV takes precedence over credentials file and instance profile
@@ -47,6 +53,10 @@ module Tori
 
       def write(filename, resource, opts = nil)
         opts ||= {}
+        if from_path = opts.delete(:from_path)
+          opts[:content_type] = self.class.type_for(from_path)
+        end
+
         case resource
         when String
           put_object({
@@ -56,7 +66,7 @@ module Tori
           }.merge(opts))
         when File, Pathname
           path = resource.to_path
-          content_type = MIME::Types.type_for(path).first || DEFAULT_CONTENT_TYPE
+          content_type = self.class.type_for(path)
           ::File.open(path) { |f|
             put_object({
               key: filename,
@@ -91,10 +101,12 @@ module Tori
         body(filename).read
       end
 
+      def get(filename)
+        get_object(key: filename)
+      end
+
       def body(filename)
-        get_object(
-          key: filename
-        )[:body]
+        get(filename)[:body]
       end
 
       def put(filename, body, opts={})

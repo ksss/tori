@@ -28,6 +28,19 @@ class TestToriBackendS3 < Test::Unit::TestCase
     @backend.delete("testfile")
   end
 
+  test "auto content_type" do
+    Tempfile.create(["test", ".jpeg"]) do |f|
+      file = Tori::File.new(:dummy, from: f, to: @backend){ |model| "test-key" }
+      begin
+        file.write
+        content_type = file.get.content_type
+        assert { 'image/jpeg' == content_type }
+      ensure
+        file.delete
+      end
+    end
+  end
+
   test "#initialize" do
     assert_instance_of Tori::Backend::S3, @backend
     assert { ENV["TORI_AWS_ACCESS_KEY_ID"] == @backend.client.config.access_key_id }
