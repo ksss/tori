@@ -118,6 +118,7 @@ class PhotoController < ApplicationController
       photo.striped_image.write
     }
   end
+end
 ```
 
 # Custom configure example
