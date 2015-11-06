@@ -88,6 +88,11 @@ class Photo < ActiveRecord::Base
   tori :striped_image do |model|
     "#{model.class}/striped/#{model.striped_filename}"
   end
+
+  # customize backend each by `tori` method.
+  tori :custom, to: Tori::Backend::FileSystem.new(Pathname("custom")) do |model|
+    "#{__tori__}/#{id}"
+  end
 end
 
 class PhotoController < ApplicationController
