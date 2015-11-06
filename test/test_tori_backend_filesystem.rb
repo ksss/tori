@@ -18,6 +18,7 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
 
   test "#exist?" do
     assert { true == @filesystem.exist?(".") }
+    assert { true == @filesystem.exist?("testfile") }
     assert { false == @filesystem.exist?("nothing_file") }
   end
 
