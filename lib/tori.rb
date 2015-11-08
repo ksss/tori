@@ -1,9 +1,3 @@
-require 'tori/backend/filesystem'
-require 'tori/config'
-require 'tori/context'
-require 'tori/define'
-require 'tori/file'
-require 'tori/version'
 require 'pathname'
 require 'digest/sha1'
 require "fileutils"
@@ -34,3 +28,11 @@ module Tori
     end
   end
 end
+
+require 'tori/backend/filesystem'
+require 'tori/backend/chain'
+require 'tori/config'
+require 'tori/context'
+require 'tori/define'
+require 'tori/file'
+require 'tori/version'
