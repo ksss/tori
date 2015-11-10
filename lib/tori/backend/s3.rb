@@ -131,19 +131,19 @@ module Tori
       end
 
       def open(filename)
-        ext = ::File.extname(filename)
-        body = body(filename)
+        blob = read(filename)
+        opt = [::File.basename(filename), ::File.extname(filename)]
 
         if block_given?
-          Tempfile.create([filename, ext]) do |f|
-            f.write body
+          Tempfile.create(opt) do |f|
+            f.write blob
             f.fsync
             f.rewind
             yield f
           end
         else
-          f = Tempfile.open([filename, ext])
-          f.write body
+          f = Tempfile.open(opt)
+          f.write blob
           f.fsync
           f.rewind
           f

@@ -25,7 +25,6 @@ class TestToriBackendS3 < Test::Unit::TestCase
 
   teardown do
     FileUtils.rm_rf("test/tmp")
-    @backend.delete("testfile")
   end
 
   test "auto content_type" do
@@ -122,6 +121,12 @@ class TestToriBackendS3 < Test::Unit::TestCase
     f = @backend.open("testfile")
     assert_instance_of Tempfile, f
     f.close!
+
+    @backend.write("path/to/file", @testfile_path)
+    @backend.open("path/to/file") do |f|
+      assert_instance_of File, f
+      path = f.path
+    end
   end
 end
 
