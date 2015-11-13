@@ -119,9 +119,9 @@ class TestToriBackendS3 < Test::Unit::TestCase
       path = f.path
     end
     assert { false == File.exist?(path) }
-    f = @backend.open("testfile", tmpdir: "/tmp")
+    f = @backend.open("testfile", tmpdir: "test/tmp")
     assert_instance_of Tempfile, f
-    assert { f.path =~ %r{/tmp/.*} }
+    assert { f.path =~ %r{test/tmp/.*} }
     f.close!
 
     @backend.write("path/to/file", @testfile_path)
