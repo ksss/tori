@@ -130,18 +130,19 @@ module Tori
         signer.presigned_url(method, bucket: @bucket, key: filename)
       end
 
-      def open(filename)
-        opt = [::File.basename(filename), ::File.extname(filename)]
+      def open(filename, opts = {})
+        names = [::File.basename(filename), ::File.extname(filename)]
+        tmpdir = opts.delete(:tmpdir)
 
         if block_given?
-          Tempfile.create(opt) do |f|
+          Tempfile.create(names, tmpdir, opts) do |f|
             get_object(key: filename, response_target: f.path)
             f.fsync
             f.rewind
             yield f
           end
         else
-          f = Tempfile.open(opt)
+          f = Tempfile.open(names, tmpdir, opts)
           get_object(key: filename, response_target: f.path)
           f.fsync
           f.rewind
