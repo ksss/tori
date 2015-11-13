@@ -115,6 +115,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
     path = nil
     @backend.open("testfile") do |f|
       assert_instance_of File, f
+      assert { "text" == f.read }
       path = f.path
     end
     assert { false == File.exist?(path) }
@@ -125,7 +126,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
     @backend.write("path/to/file", @testfile_path)
     @backend.open("path/to/file") do |f|
       assert_instance_of File, f
-      path = f.path
+      assert { "text" == f.read }
     end
   end
 end
