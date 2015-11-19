@@ -137,15 +137,11 @@ module Tori
         if block_given?
           Tempfile.create(names, tmpdir, opts) do |f|
             get_object(key: filename, response_target: f.path)
-            f.fsync
-            f.rewind
             yield f
           end
         else
           f = Tempfile.open(names, tmpdir, opts)
           get_object(key: filename, response_target: f.path)
-          f.fsync
-          f.rewind
           f
         end
       end
