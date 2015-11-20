@@ -19,6 +19,8 @@ module Tori
       class ExistError < StandardError
       end
 
+      attr_accessor :backends
+
       def initialize(*backends)
         @backends = backends
       end
