@@ -97,19 +97,19 @@ module Tori
       end
       alias exists? exist?
 
-      def read(filename)
-        body(filename).read
+      def read(filename, **opts)
+        body(filename, **opts).read
       end
 
-      def get(filename)
-        get_object(key: filename)
+      def body(filename, **opts)
+        get(filename, **opts)[:body]
       end
 
-      def body(filename)
-        get(filename)[:body]
+      def get(filename, **opts)
+        get_object(key: filename, **opts)
       end
 
-      def put(filename, body, opts={})
+      def put(filename, body, **opts)
         put_object key: filename, body: body, **opts
       end
 

@@ -93,6 +93,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
 
   test "#read" do
     assert_equal "text", @backend.read("testfile")
+    assert_raise(Aws::S3::Errors::NoSuchKey) { @backend.read("testfile", key: "nothing") }
   end
 
   test "#exists?" do
