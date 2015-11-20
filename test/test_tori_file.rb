@@ -57,6 +57,17 @@ class TestToriFile < Test::Unit::TestCase
     assert { true == File.exist?("test/tmp/copy") }
   end
 
+  test "backend" do
+    assert { Tori.config.backend == Tori::File.new(nil).backend }
+  end
+
+  test "backend=" do
+    o = Object.new
+    t = Tori::File.new(nil)
+    assert { o == (t.backend = (o)) }
+    assert { o == t.backend }
+  end
+
   test "write with closed file" do
     tori_file = nil
     path = nil

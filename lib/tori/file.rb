@@ -54,6 +54,10 @@ module Tori
       @backend || Tori.config.backend
     end
 
+    def backend=(new_backend)
+      @backend = new_backend
+    end
+
     private
 
     def respond_to_missing?(sym, include_private)
