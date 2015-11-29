@@ -28,6 +28,7 @@ module Tori
     end
     alias to_s name
 
+    attr_reader :from
     def from?
       !@from.nil?
     end
