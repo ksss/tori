@@ -35,8 +35,8 @@ module Tori
       end
       alias exists? exist?
 
-      def read(filename)
-        ::File.read(path(filename), mode: 'rb')
+      def read(filename, **args)
+        ::File.read(path(filename), { mode: 'rb' }.merge(args))
       end
 
       def open(filename, *rest, &block)

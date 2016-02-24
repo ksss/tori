@@ -28,6 +28,8 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
     bin = (0..0xFF).to_a.pack("c*")
     File.open(@filesystem.root.join("binfile"), 'wb'){ |f| f.write bin }
     assert { bin == @filesystem.read("binfile") }
+    assert { Encoding::ASCII_8BIT == @filesystem.read("binfile").encoding }
+    assert { Encoding::UTF_8 == @filesystem.read("binfile", external_encoding: Encoding::UTF_8).encoding }
   end
 
   test "#path" do
