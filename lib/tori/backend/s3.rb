@@ -146,6 +146,10 @@ module Tori
         end
       end
 
+      def otherwise(backend)
+        Chain.new(self, backend)
+      end
+
       def get_object(opts={})
         client.get_object bucket: @bucket, **opts
       end

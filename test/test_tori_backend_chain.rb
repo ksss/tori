@@ -13,6 +13,12 @@ class TestToriBackendChain < Test::Unit::TestCase
     @backend = Chain.new(@filesystem1, @filesystem2)
   end
 
+  test "#initialize" do
+    assert { Chain === Chain.new }
+    assert { [@filesystem1, @filesystem2] === Chain.new(@filesystem1, @filesystem2).backends }
+    assert { Chain === @filesystem1.otherwise(@filesystem2) }
+  end
+
   test "#backend" do
     assert { @filesystem1 == @backend.backend("testfile-1") }
     assert { @filesystem2 == @backend.backend("testfile-2") }

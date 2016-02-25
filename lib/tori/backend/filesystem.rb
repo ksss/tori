@@ -46,6 +46,10 @@ module Tori
       def path(filename)
         @root.join filename.to_s
       end
+
+      def otherwise(backend)
+        Chain.new(self, backend)
+      end
     end
   end
 end
