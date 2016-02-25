@@ -3,22 +3,10 @@ module Tori
     def initialize(model, title: nil, from: nil, to: nil, &block)
       @model = model
       @title = title.kind_of?(String) ? title.to_sym : title
-
-      @from_path = if from.respond_to?(:path)
-        from.path
-      else
-        nil
-      end
-
       @backend = to
-
-      @from = if from.respond_to?(:read) and from.respond_to?(:rewind)
-        from.rewind
-        from.read
-      else
-        from
-      end
       @filename_callback = block
+
+      self.from = from
     end
 
     def name
@@ -28,7 +16,24 @@ module Tori
     end
     alias to_s name
 
-    attr_reader :from
+    def from
+      @from
+    end
+
+    def from=(file)
+      @from_path = if file.respond_to?(:path)
+        file.path
+      else
+        nil
+      end
+      @from = if file.respond_to?(:read) and file.respond_to?(:rewind)
+        file.rewind
+        file.read
+      else
+        file
+      end
+    end
+
     def from?
       !@from.nil?
     end
