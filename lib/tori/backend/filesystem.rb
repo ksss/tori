@@ -8,19 +8,21 @@ module Tori
       end
 
       def write(filename, resource, opts = nil)
+        pathname = path(filename)
+        FileUtils.mkdir_p pathname.dirname
+
         case resource
         when String
-          ::File.open(path(filename), 'wb'){ |f| f.write resource }
+          ::File.open(pathname, 'wb'){ |f| f.write resource }
         when Pathname
           # see also https://bugs.ruby-lang.org/issues/11199
           ::File.open(resource) { |src|
-            FileUtils.mkdir_p path(filename).dirname
-            ::File.open(path(filename), 'wb'){ |dst|
+            ::File.open(pathname, 'wb'){ |dst|
               ::IO.copy_stream src, dst
             }
           }
         else
-          ::File.open(path(filename), 'wb') do |dst|
+          ::File.open(pathname, 'wb') do |dst|
             ::IO.copy_stream resource, dst
           end
         end
