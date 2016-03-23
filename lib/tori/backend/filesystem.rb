@@ -1,6 +1,8 @@
 module Tori
   module Backend
     class FileSystem
+      ResourceError = Class.new(StandardError)
+
       attr_accessor :root
       def initialize(root)
         @root = root
@@ -10,6 +12,10 @@ module Tori
       def write(filename, resource, opts = nil)
         pathname = path(filename)
         FileUtils.mkdir_p pathname.dirname
+
+        if resource.nil? && opts && opts[:body]
+          resource = opts[:body]
+        end
 
         case resource
         when String
@@ -21,6 +27,8 @@ module Tori
               ::IO.copy_stream src, dst
             }
           }
+        when NilClass
+          raise ResourceError, "null resource"
         else
           ::File.open(pathname, 'wb') do |dst|
             ::IO.copy_stream resource, dst

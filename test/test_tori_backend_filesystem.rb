@@ -48,6 +48,16 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
     @filesystem.write("copyfile", "string")
     assert { "string" == @filesystem.read("copyfile") }
 
+    assert_raise(Tori::Backend::FileSystem::ResourceError) do
+      @filesystem.write("copyfile", nil)
+    end
+
+    @filesystem.write("copyfile", nil, body: "S3 compatible API")
+    assert { "S3 compatible API" == @filesystem.read("copyfile") }
+
+    @filesystem.write("copyfile", "resource is priority", body: "S3 compatible API")
+    assert { "resource is priority" == @filesystem.read("copyfile") }
+
     bin = (0..0xFF).to_a.pack("c*")
     @filesystem.write("binfile", bin)
     assert { bin == @filesystem.read("binfile") }
