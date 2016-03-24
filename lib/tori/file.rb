@@ -38,10 +38,6 @@ module Tori
       !@from.nil?
     end
 
-    def read
-      backend.read name
-    end
-
     def write(opts = nil)
       opts ||= {}
       backend.write name, @from, opts.merge(from_path: @from_path)
