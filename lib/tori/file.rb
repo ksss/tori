@@ -69,7 +69,7 @@ module Tori
       if respond_to_missing?(sym, false)
         backend.__send__ sym, name, *args, &block
       else
-        fail NameError, "undefined method `#{sym}' for #{Tori.config.backend.inspect}"
+        raise NameError, "undefined method `#{sym}' for #{backend}"
       end
     end
   end
