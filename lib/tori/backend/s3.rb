@@ -113,9 +113,9 @@ module Tori
         put_object key: filename, body: body, **opts
       end
 
-      def head(filename = nil)
+      def head(filename = nil, **opts)
         if filename
-          head_object key: filename
+          head_object key: filename, **opts
         else
           head_bucket
         end
