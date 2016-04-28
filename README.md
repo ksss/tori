@@ -121,29 +121,6 @@ class PhotoController < ApplicationController
 end
 ```
 
-# Custom configure example
-
-```ruby
-# Save to S3 bucket.
-require 'tori/backend/s3'
-Tori.config.backend = Tori::Backend::S3.new(bucket: 'tori_bucket')
-
-# Filename decided by model.class.name,id and hidden words.
-Tori.config.filename_callback do |model|
-  "#{model.class.name}/#{Digest::SHA1.hexdigest "#{ENV["TORI_MAGICKWORD"]}/#{model.id}"}"
-end
-
-# You can change any way define filename.
-Tori.config.filename_callback do |model|
-  # `__tori__` method is meta name of defined by `tori` method.
-  "#{model.class.name}/#{__tori__}/#{model.title}"
-  # class Photo
-  #   tori :orig #=> "Photo/orig/cool-shot.png"
-  #   tori :strip #=> "Photo/strip/cool-shot.png"
-  # end
-end
-```
-
 # Default configure
 
 [https://github.com/ksss/tori/blob/master/lib/tori.rb](https://github.com/ksss/tori/blob/master/lib/tori.rb)
