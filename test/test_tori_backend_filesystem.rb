@@ -34,6 +34,7 @@ class TestToriBackendFileSystem < Test::Unit::TestCase
     File.open(@filesystem.root.join("utf8file"), 'wb') { |f| f.write utf8 }
     assert { utf8 != @filesystem.read("utf8file") }
     assert { utf8 == @filesystem.read("utf8file", external_encoding: Encoding::UTF_8) }
+    assert { "\xE3".b == @filesystem.read("utf8file", 1) }
 
     assert { Encoding::ASCII_8BIT == @filesystem.read("binfile").encoding }
     assert { Encoding::UTF_8 == @filesystem.read("binfile", external_encoding: Encoding::UTF_8).encoding }
