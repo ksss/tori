@@ -57,6 +57,10 @@ module Tori
           opts[:content_type] = self.class.type_for(from_path)
         end
 
+        if resource.nil? && opts[:body]
+          resource = opts[:body]
+        end
+
         case resource
         when String
           put_object({

@@ -18,7 +18,7 @@ class TestToriFile < Test::Unit::TestCase
     def rewind
     end
 
-    def read
+    def read(*)
       __FILE__
     end
   end
@@ -54,6 +54,14 @@ class TestToriFile < Test::Unit::TestCase
   test "write" do
     assert { false == File.exist?("test/tmp/copy") }
     Tori::File.new("copy", from: From.new).write
+    assert { true == File.exist?("test/tmp/copy") }
+  end
+
+  test "write with body" do
+    assert { false == File.exist?("test/tmp/copy") }
+    Tori::File.new("copy").write(
+      body: From.new,
+    )
     assert { true == File.exist?("test/tmp/copy") }
   end
 
