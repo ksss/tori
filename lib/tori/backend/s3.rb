@@ -173,6 +173,10 @@ module Tori
       def delete_object(opts={})
         client.delete_object bucket: @bucket, **opts
       end
+
+      def copy_object(opts = {})
+        client.copy_object bucket: @bucket, **opts
+      end
     end
   end
 end
