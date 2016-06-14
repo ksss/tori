@@ -60,6 +60,16 @@ module Tori
         ::File.open(path(filename), *rest, &block)
       end
 
+      def copy_to(filename, tori_file, **opts)
+        FileUtils.mkdir_p tori_file.path.dirname
+
+        ::File.open(path(filename)) do |from|
+          ::File.open(tori_file.path, 'w+') do |to|
+            IO.copy_stream(from, to)
+          end
+        end
+      end
+
       def path(filename)
         @root.join filename.to_s
       end

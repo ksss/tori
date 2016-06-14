@@ -125,6 +125,15 @@ module Tori
         end
       end
 
+      def copy_to(filename, tori_file, **opts)
+        copy_object(
+          copy_source: "#{bucket}/#{filename}",
+          bucket:      backend.bucket,
+          key:         tori_file.name,
+          **opts,
+        )
+      end
+
       def public_url(filename)
         "#{client.config.endpoint}/#{@bucket}/#{filename}"
       end
