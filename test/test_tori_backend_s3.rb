@@ -115,4 +115,12 @@ class TestToriBackendS3 < Test::Unit::TestCase
       assert { "foo" == f.read }
     end
   end
+
+  test "#copy_to" do
+    o = Object.new
+    file = Tori::File.new(o) do |model|
+      model.object_id.to_s
+    end
+    @backend.copy_to("copy_to_file", file)
+  end
 end

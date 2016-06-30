@@ -128,7 +128,7 @@ module Tori
       def copy_to(filename, tori_file, **opts)
         copy_object(
           copy_source: "#{bucket}/#{filename}",
-          bucket:      backend.bucket,
+          bucket:      bucket,
           key:         tori_file.name,
           **opts,
         )
