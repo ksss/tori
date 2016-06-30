@@ -1,10 +1,10 @@
 require 'test_helper'
 require 'tori/backend/s3'
-
-if ENV["TORI_TEST_BUCKET"]
+require_relative 'aws_s3_stub'
 
 class TestToriBackendS3 < Test::Unit::TestCase
   BucketNotFoundError = Class.new(StandardError)
+  TORI_TEST_BUCKET = 'tori-testing-bucket'
   def request_head(url)
     uri = URI.parse(url)
     req = Net::HTTP::Head.new(uri.path)
@@ -14,7 +14,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
   end
 
   setup do
-    @backend = Tori::Backend::S3.new(bucket: ENV["TORI_TEST_BUCKET"])
+    @backend = Tori::Backend::S3.new(bucket: TORI_TEST_BUCKET, client: Aws::S3::Client.new)
     fail BucketNotFoundError, "S3 test need make s3 bucket '#{@backend.bucket}'" unless @backend.exists?
 
     @testfile_path = Pathname.new("test/tmp/testfile")
@@ -28,16 +28,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
   end
 
   test "auto content_type" do
-    Tempfile.create(["test", ".jpeg"]) do |f|
-      file = Tori::File.new(:dummy, from: f, to: @backend){ |model| "test-key" }
-      begin
-        file.write
-        content_type = file.get.content_type
-        assert { 'image/jpeg' == content_type }
-      ensure
-        file.delete
-      end
-    end
+    assert { 'image/jpeg' == Tori::Backend::S3.type_for("test.jpeg") }
   end
 
   test "#initialize" do
@@ -46,7 +37,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
     assert { ENV["TORI_AWS_SECRET_ACCESS_KEY"] == @backend.client.config.secret_access_key }
 
     custom_backend = Tori::Backend::S3.new(
-      bucket: ENV["TORI_TEST_BUCKET"],
+      bucket: TORI_TEST_BUCKET,
       client: Aws::S3::Client.new(access_key_id: 'aaa', secret_access_key: 'bbb'),
     )
     assert_instance_of Tori::Backend::S3, custom_backend
@@ -56,7 +47,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
     assert_raise(ArgumentError){ Tori::Backend::S3.new }
     assert_raise(TypeError) {
       Tori::Backend::S3.new(
-        bucket: ENV["TORI_TEST_BUCKET"],
+        bucket: TORI_TEST_BUCKET,
         client: Object.new,
       )
     }
@@ -69,9 +60,9 @@ class TestToriBackendS3 < Test::Unit::TestCase
   end
 
   test "#write String" do
-    @backend.write("testfile", "foo", content_type: "image/png")
+    @backend.write("testfile", "foo", content_type: "text/plain")
     testfile = @backend.get_object(key: "testfile")
-    assert { "image/png" == testfile.content_type }
+    assert { "text/plain" == testfile.content_type }
     assert { "foo" == testfile[:body].read }
   end
 
@@ -79,21 +70,15 @@ class TestToriBackendS3 < Test::Unit::TestCase
     assert_nothing_raised { @backend.write("testfile", @testfile_path) }
     testfile = @backend.get_object(key: "testfile")
     assert { "text/plain" == testfile.content_type }
-    assert { 4 == testfile.content_length }
-    assert { "text" == testfile[:body].read }
+    assert { 3 == testfile.content_length }
+    assert { "foo" == testfile[:body].read }
 
-    @backend.write("testfile", @testfile_path, acl: "public-read-write")
-    res = request_head(@backend.public_url("testfile"))
-    assert { Net::HTTPOK === res}
-
-    @backend.write("testfile", @testfile_path, acl: "private")
-    res = request_head(@backend.public_url("testfile"))
-    assert { Net::HTTPForbidden === res}
+    assert_nothing_raised { @backend.write("testfile", @testfile_path, acl: "public-read-write") }
+    assert_nothing_raised { @backend.write("testfile", @testfile_path, acl: "private") }
   end
 
   test "#read" do
-    assert_equal "text", @backend.read("testfile")
-    assert_raise(Aws::S3::Errors::NoSuchKey) { @backend.read("testfile", key: "nothing") }
+    assert_equal "foo", @backend.read("testfile")
   end
 
   test "#exists?" do
@@ -103,11 +88,10 @@ class TestToriBackendS3 < Test::Unit::TestCase
 
   test "#delete" do
     assert_nothing_raised { @backend.delete("testfile") }
-    assert { false == @backend.exists?("testfile") }
   end
 
   test "#public_url" do
-    assert_match %r!https?://s3-!, @backend.public_url("testfile")
+    assert_match %r!https?://s3!, @backend.public_url("testfile")
     assert_match @backend.bucket, @backend.public_url("testfile")
     assert_match "testfile", @backend.public_url("testfile")
   end
@@ -116,7 +100,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
     path = nil
     @backend.open("testfile") do |f|
       assert_instance_of File, f
-      assert { "text" == f.read }
+      assert { "foo" == f.read }
       path = f.path
     end
     assert { false == File.exist?(path) }
@@ -128,9 +112,7 @@ class TestToriBackendS3 < Test::Unit::TestCase
     @backend.write("path/to/file", @testfile_path)
     @backend.open("path/to/file") do |f|
       assert_instance_of File, f
-      assert { "text" == f.read }
+      assert { "foo" == f.read }
     end
   end
-end
-
 end
