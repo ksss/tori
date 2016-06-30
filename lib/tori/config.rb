@@ -8,8 +8,6 @@ module Tori
 
     def filename_callback(&block)
       if block_given?
-        warn "DEPRECATED: `#{__method__}' is deprecated method."
-        warn "Please use `tori` method block style in model like `tori :name, { |model| model.id }`."
         @filename_callback = block
       else
         @filename_callback
