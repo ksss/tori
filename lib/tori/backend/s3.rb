@@ -1,4 +1,4 @@
-require 'aws-sdk-core'
+require 'aws-sdk-s3'
 require 'mime/types'
 
 module Tori
