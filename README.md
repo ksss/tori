@@ -7,7 +7,7 @@ Tori
 
 Tori is a very very simple file uploader.
 
-Tori dose nothing.
+Tori does nothing.
 
 Only file upload to backend store.
 
