@@ -45,19 +45,14 @@ module Tori
       end
       alias exists? exist?
 
-      def read(filename, *args)
-        if args.last.kind_of?(Hash)
-          opt = args.pop
-        else
-          opt = {}
-        end
-        open(filename, {mode: 'rb'}.merge(opt)) do |f|
-          f.read(*args)
+      def read(filename, *arg, **opt)
+        open(filename, **{mode: 'rb'}.merge(opt)) do |f|
+          f.read(*arg)
         end
       end
 
-      def open(filename, *rest, &block)
-        ::File.open(path(filename), *rest, &block)
+      def open(filename, *arg, **key, &block)
+        ::File.open(path(filename), *arg, **key, &block)
       end
 
       def copy_to(filename, tori_file, **opts)
