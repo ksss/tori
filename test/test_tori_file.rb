@@ -104,6 +104,6 @@ class TestToriFile < Test::Unit::TestCase
   test "#method_missing" do
     assert { true == Tori::File.new(nil).respond_to?(:read) }
     assert_raise(NameError) { Tori::File.new(nil).undefined }
-    assert { [true, Encoding.find('utf-8'), 'test/tmp'] == Tori::File.new(nil).open('rb', external_encoding: 'utf-8'){ |f| [f.binmode?, f.external_encoding, f.path] } }
+    assert { [true, Encoding.find('utf-8'), 'test/tmp'] == Tori::File.new(nil).open(mode: 'rb', external_encoding: 'utf-8'){ |f| [f.binmode?, f.external_encoding, f.path] } }
   end
 end
