@@ -1,3 +1,5 @@
+require 'ruby2_keywords'
+
 module Tori
   module Backend
     class FileSystem
@@ -45,19 +47,31 @@ module Tori
       end
       alias exists? exist?
 
-      def read(filename, *args)
-        if args.last.kind_of?(Hash)
-          opt = args.pop
-        else
-          opt = {}
+      if RUBY_VERSION < '2.7'
+        ruby2_keywords def read(filename, *args)
+          if args.last.kind_of?(Hash)
+            opt = args.pop
+          else
+            opt = {}
+          end
+          open(filename, {mode: 'rb'}.merge(opt)) do |f|
+            f.read(*args)
+          end
         end
-        open(filename, {mode: 'rb'}.merge(opt)) do |f|
-          f.read(*args)
-        end
-      end
 
-      def open(filename, *rest, &block)
-        ::File.open(path(filename), *rest, &block)
+        ruby2_keywords def open(filename, *rest, &block)
+          ::File.open(path(filename), *rest, &block)
+        end
+      else
+        def read(filename, len=nil, **args)
+          open(filename, **{mode: 'rb'}.merge(args)) do |f|
+            f.read(len)
+          end
+        end
+
+        def open(filename, **rest, &block)
+          ::File.open(path(filename), **rest, &block)
+        end
       end
 
       def copy_to(filename, tori_file, **opts)

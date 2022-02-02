@@ -1,3 +1,5 @@
+require 'ruby2_keywords'
+
 module Tori
   class File
     def initialize(model, title: nil, from: nil, to: nil, &block)
@@ -65,12 +67,24 @@ module Tori
       backend.respond_to?(sym, include_private)
     end
 
-    def method_missing(sym, *args, &block)
-      if respond_to_missing?(sym, false)
-        backend.__send__ sym, name, *args, &block
-      else
-        raise NameError, "undefined method `#{sym}' for #{backend}"
+    if RUBY_VERSION < "2.7"
+      ruby2_keywords def method_missing(sym, *args, &block)
+        if respond_to_missing?(sym, false)
+          backend.__send__ sym, name, *args, &block
+        else
+          raise NameError, "undefined method `#{sym}' for #{backend}"
+        end
       end
+    else
+      eval <<~'RUBY'
+        def method_missing(sym, ...)
+          if respond_to_missing?(sym, false)
+            backend.__send__(sym, name, ...)
+          else
+            raise NameError, "undefined method `#{sym}' for #{backend}"
+          end
+        end
+      RUBY
     end
   end
 end

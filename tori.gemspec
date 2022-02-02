@@ -19,6 +19,8 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "aws-sdk-s3"
   spec.add_runtime_dependency "mime-types"
+  spec.add_runtime_dependency 'rexml'
+  spec.add_runtime_dependency 'ruby2_keywords'
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "test-unit"

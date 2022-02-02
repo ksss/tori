@@ -148,12 +148,12 @@ module Tori
         tmpdir = opts.delete(:tmpdir)
 
         if block_given?
-          Tempfile.create(names, tmpdir, opts) do |f|
+          Tempfile.create(names, tmpdir, **opts) do |f|
             get_object(key: filename, response_target: f.path)
             yield f
           end
         else
-          f = Tempfile.open(names, tmpdir, opts)
+          f = Tempfile.open(names, tmpdir, **opts)
           get_object(key: filename, response_target: f.path)
           f
         end
