@@ -10,7 +10,7 @@ class TestToriFile < Test::Unit::TestCase
   end
 
   teardown do
-    Tori.config.filename_callback &@orig
+    Tori.config.filename_callback(&@orig)
     FileUtils.rm_rf("test/tmp")
   end
 
@@ -98,7 +98,7 @@ class TestToriFile < Test::Unit::TestCase
     end
     assert { "test/" == Tori::File.new("test").name }
     assert { "test/tori" == Tori::File.new("test", title: "tori").name }
-    Tori.config.filename_callback &before
+    Tori.config.filename_callback(&before)
   end
 
   test "#method_missing" do
