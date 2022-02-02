@@ -1,7 +1,7 @@
 Tori
 ===
 
-[![Build Status](https://travis-ci.org/ksss/tori.svg?branch=master)](https://travis-ci.org/ksss/tori)
+[![test](https://github.com/ksss/tori/actions/workflows/test.yml/badge.svg)](https://github.com/ksss/tori/actions/workflows/test.yml)
 
 "(\\( ⁰⊖⁰)/)"
 
