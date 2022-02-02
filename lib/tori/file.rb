@@ -70,7 +70,6 @@ module Tori
     if RUBY_VERSION < "2.7"
       ruby2_keywords def method_missing(sym, *args, &block)
         if respond_to_missing?(sym, false)
-          # binding.irb
           backend.__send__ sym, name, *args, &block
         else
           raise NameError, "undefined method `#{sym}' for #{backend}"
@@ -80,7 +79,6 @@ module Tori
       eval <<~'RUBY'
         def method_missing(sym, ...)
           if respond_to_missing?(sym, false)
-            # binding.irb
             backend.__send__(sym, name, ...)
           else
             raise NameError, "undefined method `#{sym}' for #{backend}"
